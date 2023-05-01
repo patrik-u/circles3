@@ -1,0 +1,11 @@
+node_modules
+dist
+
+*.local
+
+# Hardhat build artifacts
+/circle-dao/artifacts
+/circle-dao/cache
+
+# Deployment output
+/circle-dao/deploy_output

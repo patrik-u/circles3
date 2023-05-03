@@ -2,10 +2,14 @@ node_modules
 dist
 
 *.local
+.env.local
 
 # Hardhat build artifacts
 /circle-dao/artifacts
 /circle-dao/cache
+/circle-dao/artifacts-ovm
+/circle-dao/cache-ovm
 
 # Deployment output
 /circle-dao/deploy_output
+/circle-dao/.env.local

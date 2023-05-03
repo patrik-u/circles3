@@ -1,16 +1,16 @@
 import { createEffect, createSignal, createResource } from "solid-js";
 import { Magic } from "magic-sdk";
 
-const magic = new Magic(import.meta.env.VITE_MAGIC_PUBLIC_KEY, {
+export const magic = new Magic(import.meta.env.VITE_MAGIC_PUBLIC_KEY, {
     network: {
-        rpcUrl: import.meta.env.VITE_OPTIMISM_RPCURL,
-        chainId: import.meta.env.VITE_OPTIMISM_CHAINID,
+        rpcUrl: import.meta.env.VITE_NETWORK_RPCURL,
+        chainId: import.meta.env.VITE_NETWORK_CHAINID,
     },
 });
 
-export default function AuthManager() {
-    const [isLoggedIn, setIsLoggedIn] = createSignal(false);
+export const [isLoggedIn, setIsLoggedIn] = createSignal(false);
 
+export default function AuthManager() {
     const login = async () => {
         let result = await magic.wallet.connectWithUI();
         setIsLoggedIn(true);

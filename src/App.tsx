@@ -1,8 +1,9 @@
 import { Routes, Route } from "@solidjs/router";
 import type { Component } from "solid-js";
 
-import Circle from "./components/Circle";
+// import Circle from "./components/Circle";
 import AuthManager from "./components/AuthManager";
+import CircleTests from "./components/CircleTests";
 
 // import logo from './logo.svg';
 // import styles from './App.module.css';
@@ -12,7 +13,8 @@ const App: Component = () => {
         <>
             <h1>App</h1>
             <Routes>
-                <Route path="/:circleId" component={Circle} />
+                <Route path="/" component={CircleTests} />
+                {/* <Route path="/:circleId" component={Circle} /> */}
             </Routes>
             <AuthManager />
         </>

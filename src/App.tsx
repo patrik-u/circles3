@@ -1,39 +1,23 @@
 import { Routes, Route } from "@solidjs/router";
 import type { Component } from "solid-js";
 
-// import Circle from "./components/Circle";
+// import CircleSelect from "./components/CircleSelect";
+import Chat from "./components/Chat";
+import Circle from "./components/Circle";
 import AuthManager from "./components/AuthManager";
-import CircleTests from "./components/CircleTests";
-
-// import logo from './logo.svg';
-// import styles from './App.module.css';
+import LocationManager from "./components/LocationManager";
 
 const App: Component = () => {
     return (
         <>
-            <h1>App</h1>
             <Routes>
-                <Route path="/" component={CircleTests} />
+                {/* <Route path="/" component={CircleSelect} /> */}
                 {/* <Route path="/:circleId" component={Circle} /> */}
+                <Route path="/" component={Chat} />
             </Routes>
             <AuthManager />
+            <LocationManager />
         </>
-        // <div class={styles.App}>
-        //   <header class={styles.header}>
-        //     <img src={logo} class={styles.logo} alt="logo" />
-        //     <p>
-        //       Edit <code>src/App.tsx</code> and save to reload.
-        //     </p>
-        //     <a
-        //       class={styles.link}
-        //       href="https://github.com/solidjs/solid"
-        //       target="_blank"
-        //       rel="noopener noreferrer"
-        //     >
-        //       Learn Solid
-        //     </a>
-        //   </header>
-        // </div>
     );
 };
 

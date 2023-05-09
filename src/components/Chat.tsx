@@ -1,7 +1,7 @@
 import { createEffect, createSignal, onCleanup, For, Component } from "solid-js";
 import { gun, indexRef, circlesRef, state, setUserRef, setIsLoggedIn } from "./CirclesData";
 import Geohash from "latlon-geohash";
-import useGunNode from "./useGunNode";
+import useGunNode from "./useCirclesNode";
 import Globe from "./Globe";
 
 interface ChatProps {}
@@ -105,7 +105,6 @@ const Chat: Component<ChatProps> = () => {
 
     return (
         <>
-            <h2>Global Chat</h2>
             {/* TODO globe will be rendered in parent view and will be able to display any type of circles */}
             <Globe circles={messages} />
             <ul>

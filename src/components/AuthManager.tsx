@@ -106,8 +106,8 @@ export default function AuthManager() {
 
     return (
         <>
-            <dialog ref={dialogRef!}>
-                <div class="bg-white p-8 rounded-md shadow-lg">
+            <dialog ref={dialogRef!} class="bg-transparent">
+                <div class="bg-white p-8 rounded-lg shadow-lg">
                     <h2 class="text-2xl font-bold mb-6">Log in / Sign up</h2>
 
                     <div class="mb-4">
@@ -143,7 +143,11 @@ export default function AuthManager() {
                 </div>
             </dialog>
             {state.isLoggedIn && (
-                <button type="button" class="bg-blue-500 text-white font-semibold px-6 py-2 rounded-md hover:bg-blue-600" onClick={signOut}>
+                <button
+                    type="button"
+                    class="absolute top-2 right-2 bg-blue-500 text-white font-semibold px-6 py-2 rounded-md hover:bg-blue-600"
+                    onClick={signOut}
+                >
                     Sign out
                 </button>
             )}

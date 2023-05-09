@@ -36,4 +36,5 @@ export default defineConfig({
             "gun/lib/rindexed",
         ],
     },
+    base: "/circles3",
 });

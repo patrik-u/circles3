@@ -1,5 +1,5 @@
 import { Component } from "solid-js";
-import { Circle } from "../models/types";
+import { Circle } from "./CirclesData";
 
 interface CirclePictureProps {
     circle: Circle;
@@ -16,7 +16,13 @@ const CirclePicture: Component<CirclePictureProps> = ({ circle, size, className 
         objectFit: "cover",
     };
 
-    return <img src={picture} alt="Circle Picture" style={dynamicStyle} class={className} />;
+    const handleImageError = (event: Event) => {
+        // Replace the src attribute with the URL of your default image
+        const imgElement = event.target as HTMLImageElement;
+        imgElement.src = "./images/default-circle-picture.png";
+    };
+
+    return <img src={picture} alt="Circle Picture" style={dynamicStyle} class={className} onerror={handleImageError} />;
 };
 
 export default CirclePicture;

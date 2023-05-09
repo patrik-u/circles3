@@ -1,8 +1,8 @@
 import { createEffect, createSignal } from "solid-js";
 import { useParams } from "@solidjs/router";
 import { ethers } from "ethers";
-import CircleDAO from "../../../circle-dao/artifacts/contracts/CircleDAO.sol/CircleDAO.json";
-import { isLoggedIn, magic } from "./MagicConnectAuthManager";
+import CircleDAO from "../../circle-dao/artifacts/contracts/CircleDAO.sol/CircleDAO.json";
+import { isLoggedIn, magic } from "./Temp/MagicConnectAuthManager";
 
 export default function CircleTests() {
     const createCircle = async () => {

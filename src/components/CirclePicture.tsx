@@ -2,18 +2,15 @@ import { Component } from "solid-js";
 import { Circle } from "./CirclesData";
 
 interface CirclePictureProps {
-    circle: Circle;
+    circle: Circle | null;
     size: string;
     className?: string;
 }
 
-const CirclePicture: Component<CirclePictureProps> = ({ circle, size, className }) => {
-    const { picture } = circle;
+const CirclePicture: Component<CirclePictureProps> = (props) => {
     const dynamicStyle = {
-        width: size,
-        height: size,
-        borderRadius: "50%",
-        objectFit: "cover",
+        width: props.size,
+        height: props.size,
     };
 
     const handleImageError = (event: Event) => {
@@ -22,7 +19,15 @@ const CirclePicture: Component<CirclePictureProps> = ({ circle, size, className 
         imgElement.src = "./images/default-circle-picture.png";
     };
 
-    return <img src={picture} alt="Circle Picture" style={dynamicStyle} class={className} onerror={handleImageError} />;
+    return (
+        <img
+            src={props.circle?.picture ?? "./images/default-circle-picture.png"}
+            alt="Circle Picture"
+            style={dynamicStyle}
+            class={`rounded-full object-cover  ${props.className}`}
+            onerror={handleImageError}
+        />
+    );
 };
 
 export default CirclePicture;

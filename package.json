@@ -5,9 +5,9 @@
     "scripts": {
         "start": "vite",
         "dev": "vite",
-        "build": "vite build",
         "serve": "vite preview",
-        "deploy": "gh-pages -d dist"
+        "build": "env-cmd -f .env.production vite build",
+        "deploy": "npm run build && gh-pages -d dist"
     },
     "license": "MIT",
     "devDependencies": {

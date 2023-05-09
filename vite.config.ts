@@ -14,7 +14,7 @@ const moduleExclude = (match: string): Plugin => {
     };
 };
 
-export default defineConfig({
+export default defineConfig(({ mode }) => ({
     plugins: [solidPlugin(), moduleExclude("text-encoding")],
     server: {
         port: 3000,
@@ -36,5 +36,5 @@ export default defineConfig({
             "gun/lib/rindexed",
         ],
     },
-    base: "/circles3",
-});
+    base: mode === "production" ? "/circles3" : "/",
+}));

@@ -1,30 +1,38 @@
 import { createSignal, onCleanup, createEffect, Component, For } from "solid-js";
-import { state, Circle } from "./CirclesData";
+import { state, Circle, setCircle } from "./CirclesData";
 import CircleItem from "./CircleItem";
 
 interface CircleSelectProps {
     onSelect: (circle: Circle) => void;
+    circleSelectCollapsed: () => boolean;
 }
 
-const CircleSelect: Component<CircleSelectProps> = ({ onSelect }) => {
+const CircleSelect: Component<CircleSelectProps> = (props) => {
     // Signal to track the list of Circle objects
     const [circles, setCircles] = createSignal<Circle[]>([
         {
             name: "All",
             picture: "./images/all.png",
         },
+        {
+            name: "Test",
+            //picture: "./images/all.png",
+        },
     ]);
 
     const [selectedCircle, setSelectedCircle] = createSignal<Circle>(circles()[0]);
 
     const handleCircleClick = (circle: Circle) => {
-        setSelectedCircle(circle);
-        onSelect(circle);
+        props.onSelect(circle);
     };
 
     return (
         <div>
-            <For each={circles()}>{(circle) => <CircleItem circle={circle} selectedCircle={selectedCircle} onClick={handleCircleClick} />}</For>
+            <For each={circles()}>
+                {(circle) => (
+                    <CircleItem circle={circle} itemCollapsed={props.circleSelectCollapsed} highlightCurrentCircle={true} onClick={handleCircleClick} />
+                )}
+            </For>
         </div>
     );
 };

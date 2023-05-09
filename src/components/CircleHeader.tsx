@@ -1,24 +1,26 @@
 import { createMemo, For, Component } from "solid-js";
 import { FiArrowLeft } from "solid-icons/fi";
-import { state } from "./CirclesData";
+import { state, isMobile, circle } from "./CirclesData";
 import CirclePicture from "./CirclePicture";
-import styles from "./CircleHeader.module.css";
+import { useCircleNode } from "./CircleNode";
 
 interface CircleHeaderProps {
-    backButtonHandler: () => void;
+    onBack: () => void;
 }
 
-const CircleHeader: Component<CircleHeaderProps> = ({ backButtonHandler }) => {
-    const { picture, name, activeMembers } = state.circle;
-    const extraMembers = createMemo(() => activeMembers.length - 5);
+const CircleHeader: Component<CircleHeaderProps> = ({ onBack }) => {
+    // const { picture, name, activeMembers } = state.circle;
+    // const extraMembers = createMemo(() => activeMembers.length - 5);
 
     return (
-        <div class={styles.header}>
-            <button onClick={backButtonHandler}>
-                <FiArrowLeft />
-            </button>
-            <CirclePicture circle={state.circle} size="40px" />
-            <h2 class={styles.circleName}>{name}</h2>
+        <div class="bg-heading py-3 px-6 flex items-center justify-start">
+            {isMobile() && (
+                <button onClick={onBack} class="mr-3">
+                    <FiArrowLeft color="white" size="28px" />
+                </button>
+            )}
+            <CirclePicture circle={circle()} size="40px" className="mr-3" />
+            <h2 class="text-white">{circle()?.name}</h2>
             {/* <div class={styles.activeMembers}>
                 <For each={activeMembers.slice(0, 5)}>{(member) => <CirclePicture circle={member} size="20px" className={styles.memberBubble} />}</For>
                 {extraMembers() > 0 && <div class={styles.extraMembersBubble}>+{extraMembers()}</div>}

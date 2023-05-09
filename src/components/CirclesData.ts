@@ -1,3 +1,4 @@
+import { createSignal } from "solid-js";
 import { createStore } from "solid-js/store";
 import Gun from "gun";
 import "gun/sea";
@@ -51,6 +52,12 @@ const [state, setState] = createStore<GlobalState>({
     userLocation: undefined,
 });
 export { state, setState };
+
+const [isMobile, setIsMobile] = createSignal<boolean>(false);
+export { isMobile, setIsMobile };
+
+const [circle, setCircle] = createSignal<Circle | null>(null);
+export { circle, setCircle };
 
 // Global state setters
 export const setCircleRef = (circleRef: any) => {

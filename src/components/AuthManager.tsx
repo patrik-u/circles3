@@ -1,5 +1,6 @@
 import { createSignal, createEffect, onCleanup } from "solid-js";
 import { gun, circlesRef, state, setUserRef, setIsLoggedIn } from "./CirclesData";
+import { CgLogOut } from "solid-icons/cg";
 
 export const signOut = () => {
     gun.user().leave();
@@ -143,12 +144,8 @@ export default function AuthManager() {
                 </div>
             </dialog>
             {state.isLoggedIn && (
-                <button
-                    type="button"
-                    class="absolute top-2 right-2 bg-blue-500 text-white font-semibold px-6 py-2 rounded-md hover:bg-blue-600"
-                    onClick={signOut}
-                >
-                    Sign out
+                <button type="button" class="absolute bg-heading top-4 right-2 p-1 text-white font-semibold rounded-md " onClick={signOut}>
+                    <CgLogOut size="24px" />
                 </button>
             )}
         </>

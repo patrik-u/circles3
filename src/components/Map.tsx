@@ -5,11 +5,11 @@ import { Circle } from "./CirclesData";
 import { TextureLoader } from "three/src/loaders/TextureLoader";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 
-interface GlobeProps {
+interface MapProps {
     circles: Accessor<Circle[]>;
 }
 
-const Globe: Component<GlobeProps> = ({ circles }) => {
+const Map: Component<MapProps> = ({ circles }) => {
     let globeRef: HTMLDivElement;
     const [sceneState, setSceneState] = createSignal<THREE.Scene | null>(null);
     const [cameraState, setCameraState] = createSignal<THREE.PerspectiveCamera | null>(null);
@@ -181,4 +181,4 @@ const Globe: Component<GlobeProps> = ({ circles }) => {
     );
 };
 
-export default Globe;
+export default Map;

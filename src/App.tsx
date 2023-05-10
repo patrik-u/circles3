@@ -1,7 +1,7 @@
 import { Routes, Route, Navigate, useNavigate } from "@solidjs/router";
 import type { Component } from "solid-js";
 import { createSignal, onCleanup, createEffect } from "solid-js";
-import { Circle as CircleType, isMobile, setIsMobile } from "./components/CirclesData";
+import { Circle as CircleType, setCircle, isMobile, setIsMobile } from "./components/CirclesData";
 
 // import CircleSelect from "./components/CircleSelect";
 import Chat from "./components/Chat";
@@ -52,7 +52,11 @@ const App: Component = () => {
     };
 
     createEffect(() => {
-        setIsMobile(windowWidth() < 768);
+        let newIsMobile = windowWidth() < 768;
+        setIsMobile(newIsMobile);
+        if (newIsMobile) {
+            setCircleSelectCollapsed(false);
+        }
     });
 
     createEffect(() => {
@@ -75,9 +79,8 @@ const App: Component = () => {
 
     const onCircleSelect = (circle: CircleType) => {
         console.log("Selecting circle", circle?.name);
+        setCircle(circle);
         navigate(`/${circle?.name.toLowerCase()}`);
-
-        //setCircle(circle);
         if (windowWidth() < 768) {
             setCircleSelectVisible(false);
         }
@@ -99,12 +102,16 @@ const App: Component = () => {
             >
                 <div
                     class={`h-full w-full md:w-72 relative`}
-                    style={windowWidth() >= 768 ? `width: ${panelWidth()}rem; max-width: ${panelWidth()}rem; min-width: ${panelWidth()}rem;` : "width: 100%;"}
+                    style={
+                        windowWidth() >= 768
+                            ? `width: ${panelWidth()}rem; max-width: ${panelWidth()}rem; min-width: ${panelWidth()}rem;`
+                            : `width: ${windowWidth()}px; flex-shrink: 0;`
+                    }
                 >
                     <CircleSelect onSelect={onCircleSelect} circleSelectCollapsed={circleSelectCollapsed} />
                     <div class="hidden md:block absolute right-0 top-0 h-full w-2 cursor-col-resize" onMouseDown={onMouseDown}></div>
                 </div>
-                <div class="h-full w-full md:w-full" style="background-color: #f5f5f5;">
+                <div class="h-full w-full md:w-full" style={isMobile() ? `${windowWidth()}px; flex-shrink: 0;` : "" + `background-color: #f5f5f5;`}>
                     <Routes>
                         {/* <Route path="/" element={<Navigate href="/all" />} />; */}
                         <Route path="/:circleId" element={<Circle onBack={onBack} />} />

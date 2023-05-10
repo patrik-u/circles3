@@ -5,7 +5,7 @@ import CirclePicture from "./CirclePicture";
 interface CircleItemProps {
     circle: Circle;
     className?: string;
-    highlightCurrentCircle?: boolean;
+    selectedCircle?: () => Circle;
     onClick?: (circle: Circle) => void;
     itemCollapsed?: () => boolean;
 }
@@ -19,8 +19,8 @@ const CircleItem: Component<CircleItemProps> = (props) => {
 
     return (
         <div
-            class={`flex items-center p-3 cursor-pointer bg-white hover:bg-gray-100 transition-colors duration-200 ${
-                props.highlightCurrentCircle && currentCircle()?.name?.toLowerCase() == props.circle?.name?.toLowerCase() ? "bg-gray-100" : ""
+            class={`flex items-center p-3 cursor-pointer hover:bg-gray-100 transition-colors duration-200 ${
+                props.circle === props.selectedCircle?.() ? "bg-gray-200" : "bg-white"
             } ${props.className}`}
             onClick={handleClick}
         >

@@ -14,15 +14,16 @@ const CircleSelect: Component<CircleSelectProps> = (props) => {
             name: "All",
             picture: "./images/all.png",
         },
-        {
-            name: "Test",
-            //picture: "./images/all.png",
-        },
+        // {
+        //     name: "Test",
+        //     //picture: "./images/all.png",
+        // },
     ]);
 
     const [selectedCircle, setSelectedCircle] = createSignal<Circle>(circles()[0]);
 
     const handleCircleClick = (circle: Circle) => {
+        setSelectedCircle(circle);
         props.onSelect(circle);
     };
 
@@ -30,7 +31,7 @@ const CircleSelect: Component<CircleSelectProps> = (props) => {
         <div>
             <For each={circles()}>
                 {(circle) => (
-                    <CircleItem circle={circle} itemCollapsed={props.circleSelectCollapsed} highlightCurrentCircle={true} onClick={handleCircleClick} />
+                    <CircleItem circle={circle} itemCollapsed={props.circleSelectCollapsed} selectedCircle={selectedCircle} onClick={handleCircleClick} />
                 )}
             </For>
         </div>

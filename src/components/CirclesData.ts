@@ -59,6 +59,9 @@ export { isMobile, setIsMobile };
 const [circle, setCircle] = createSignal<Circle | null>(null);
 export { circle, setCircle };
 
+const [circles, setCircles] = createSignal<Circle[] | null>(null);
+export { circles, setCircles };
+
 // Global state setters
 export const setCircleRef = (circleRef: any) => {
     setState("circleRef", circleRef);

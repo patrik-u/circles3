@@ -1,15 +1,15 @@
 import { createEffect, createSignal, onCleanup, Accessor, Component } from "solid-js";
 import * as THREE from "three";
 // import OrbitControls from "three-orbit-controls";
-import { Circle } from "./CirclesData";
+import { Circle, circles } from "./CirclesData";
 import { TextureLoader } from "three/src/loaders/TextureLoader";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 
-interface MapProps {
-    circles: Accessor<Circle[]>;
-}
+// interface MapProps {
+//     circles: () => Circle[];
+// }
 
-const Map: Component<MapProps> = ({ circles }) => {
+const Map: Component = () => {
     let globeRef: HTMLDivElement;
     const [sceneState, setSceneState] = createSignal<THREE.Scene | null>(null);
     const [cameraState, setCameraState] = createSignal<THREE.PerspectiveCamera | null>(null);
@@ -17,11 +17,12 @@ const Map: Component<MapProps> = ({ circles }) => {
 
     const init = () => {
         console.log("initializing three js");
+        const width = globeRef.clientWidth;
+        const height = globeRef.clientHeight;
         const scene = new THREE.Scene();
-        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.001, 1000);
+        const camera = new THREE.PerspectiveCamera(75, width / height, 0.001, 1000);
         const renderer = new THREE.WebGLRenderer();
-
-        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setSize(width, height);
         globeRef.appendChild(renderer.domElement);
 
         //"#5b77c5";
@@ -123,16 +124,18 @@ const Map: Component<MapProps> = ({ circles }) => {
     };
 
     const onWindowResize = () => {
+        const width = globeRef.clientWidth;
+        const height = globeRef.clientHeight;
         let camera = cameraState();
         let renderer = rendererState();
         if (!camera || !renderer) return;
 
         // Update the camera aspect ratio
-        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.aspect = width / height;
         camera.updateProjectionMatrix();
 
         // Update the size of the renderer
-        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setSize(width, height);
     };
 
     createEffect(() => {
@@ -155,9 +158,9 @@ const Map: Component<MapProps> = ({ circles }) => {
         let scene = sceneState();
         let camera = cameraState();
         let renderer = rendererState();
-        if (!scene || !camera || !renderer) return;
-
         let circlesAr = circles();
+        if (!scene || !camera || !renderer || !circlesAr) return;
+
         console.log("updating pins", circlesAr?.length);
 
         // Remove all existing pins before creating new ones
@@ -176,7 +179,7 @@ const Map: Component<MapProps> = ({ circles }) => {
 
     return (
         <>
-            <div class="globe-container" ref={globeRef!}></div>
+            <div class="globe-container w-full h-full" ref={globeRef!}></div>
         </>
     );
 };

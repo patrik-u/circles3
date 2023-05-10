@@ -1,5 +1,5 @@
 import { createEffect, createSignal, onCleanup, For, Component } from "solid-js";
-import { gun, indexRef, circlesRef, state, setUserRef, setIsLoggedIn } from "./CirclesData";
+import { gun, indexRef, setCircles, circlesRef, state, setUserRef, setIsLoggedIn } from "./CirclesData";
 import Geohash from "latlon-geohash";
 import useGunNode from "./CircleNode";
 import Map from "./Map";
@@ -25,6 +25,11 @@ const Chat: Component<ChatProps> = () => {
     const messagesRef = indexRef.get("dates").get(dateKey);
     const messages = useGunNode(messagesRef);
 
+    createEffect(() => {
+        //console.log("Messages", messages());
+        setCircles(messages());
+    });
+
     const sendMessage = () => {
         if (message().trim() === "") return;
 
@@ -42,17 +47,17 @@ const Chat: Component<ChatProps> = () => {
                 createdAt.getUTCDate().toString().padStart(2, "0"),
         ];
 
-        let newMessage: any = { message: message(), createdAt: createdAt.toISOString(), user: state.userRef };
+        let newMessage: any = { message: message(), createdAt: createdAt.toISOString() };
 
-        // Example coordinates, replace with actual user coordinates
+        // Get user coordinates
         let geohashKeys: any[] = [];
         if (state.userLocation) {
-            // const latitude = state.userLocation.latitude;
-            // const longitude = state.userLocation.longitude;
+            const latitude = state.userLocation.latitude;
+            const longitude = state.userLocation.longitude;
 
             // TODO generate random coordinates for testing
-            const longitude = Math.random() * 360 - 180;
-            const latitude = Math.random() * 180 - 90;
+            // const longitude = Math.random() * 360 - 180;
+            // const latitude = Math.random() * 180 - 90;
 
             const geohashFull = Geohash.encode(latitude, longitude); // Default precision (12)
             const geohash = geohashFull.substring(0, 4); // Precision 4
@@ -98,26 +103,26 @@ const Chat: Component<ChatProps> = () => {
         }
     };
 
-    // createEffect(() => {
-    //     const cleanup = fetchMessages();
-    //     onCleanup(cleanup);
-    // });
-
     return (
         <>
-            <ul>
-                <For each={messages()}>
-                    {(item) => (
-                        <li>
-                            {/* {value.user}:  */}
-                            {item.message} ({new Date(item.createdAt).toLocaleTimeString()})
-                        </li>
-                    )}
-                </For>
-            </ul>
-            <div>
-                <textarea value={message()} onInput={(e) => setMessage((e.target as HTMLTextAreaElement).value)} onKeyDown={handleKeyDown} />
-                <button onClick={sendMessage}>Send</button>
+            <div class="flex">
+                <div class="p-3">
+                    <ul>
+                        <For each={messages()}>
+                            {(item) => (
+                                <li class="bg-white rounded-lg shadow-lg p-3 mb-3">
+                                    {item.message} ({new Date(item.createdAt).toLocaleTimeString()})
+                                </li>
+                            )}
+                        </For>
+                    </ul>
+                </div>
+            </div>
+            <div class="bg-white shadow-lg p-1 mt-auto w-full relative">
+                <textarea class="w-full" value={message()} onInput={(e) => setMessage((e.target as HTMLTextAreaElement).value)} onKeyDown={handleKeyDown} />
+                <button class="absolute bg-blue-200 top-2 right-2 mr-2 px-4 py-2 rounded" onClick={sendMessage}>
+                    Send
+                </button>
             </div>
         </>
     );

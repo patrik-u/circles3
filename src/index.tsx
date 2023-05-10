@@ -13,7 +13,7 @@ if (import.meta.env.DEV && !(root instanceof HTMLElement)) {
 
 render(
     () => (
-        <Router>
+        <Router base={import.meta.env.VITE_BASE_PATH}>
             <App />
         </Router>
     ),

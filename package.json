@@ -13,6 +13,7 @@
     "devDependencies": {
         "@types/latlon-geohash": "^2.0.0",
         "autoprefixer": "^10.4.14",
+        "env-cmd": "^10.1.0",
         "gh-pages": "^5.0.0",
         "postcss": "^8.4.23",
         "tailwindcss": "^3.3.2",

@@ -89,7 +89,7 @@ const Chat: Component<ChatProps> = () => {
 
     return (
         <>
-            <div class="flex">
+            <div class="flex h-full chatbg">
                 <div class="p-3">
                     <ul>
                         {circles() && (

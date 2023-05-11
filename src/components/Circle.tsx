@@ -111,7 +111,7 @@ const Circle: Component<CircleComponentProps> = ({ onBack }) => {
             <div class="flex flex-col h-screen">
                 {/* <CircleHeader onBack={onBack} /> */}
 
-                <div class="bg-white py-3 px-6 flex items-center justify-start">
+                <div class="bg-white pt-3 px-6 flex items-center justify-start">
                     {isMobile() && (
                         <button onClick={onBack} class="mr-3">
                             <FiArrowLeft color="black" size="28px" />

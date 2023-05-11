@@ -54,8 +54,13 @@ code {
 }
 
 .navbutton-toggled {
-    background-color: #d5376d;
+    background-color: #4290cf;
     color: white;
+}
+
+.chatbg {
+    background-image: url("./images/bgtile.png");
+    background-repeat: repeat;
 }
 /* #d5376d */
 /* #f10656 */

@@ -43,7 +43,7 @@ const Map: Component = () => {
         //controls.dynamicDampingFactor = 0.1;
 
         controls.target = new THREE.Vector3(0, 0, 0); // Set the target to the center of the sphere
-        const pointLight = new THREE.PointLight(0xffffff, 1);
+        const pointLight = new THREE.PointLight(0xdddddd, 1);
         pointLight.position.set(10, 10, 10);
         scene.add(pointLight);
         const ambientLight = new THREE.AmbientLight(0x404040);

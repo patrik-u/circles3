@@ -1,34 +1,13 @@
 import { createEffect, createSignal, onCleanup, For, Component } from "solid-js";
-import { gun, indexRef, setCircles, circlesRef, state, setUserRef, setIsLoggedIn } from "./CirclesData";
+import { gun, indexRef, circles, setCircles, circlesRef, state, setUserRef, setIsLoggedIn, Circle } from "./CirclesData";
 import Geohash from "latlon-geohash";
 import useGunNode from "./CircleNode";
 import Map from "./Map";
 
 interface ChatProps {}
 
-// const useNode = (nodeRef) => {
-//     const getData = () => {
-//         const [data, setData] = createSignal<any>();
-//     }
-// }
-
 const Chat: Component<ChatProps> = () => {
-    //const [messages, setMessages] = createSignal([]);
     const [message, setMessage] = createSignal("");
-
-    // Get the key to retrieve messages for this month
-    const today = new Date();
-    const dateKey = today.getUTCFullYear() + "-" + (today.getUTCMonth() + 1).toString().padStart(2, "0"); // month
-    //const dateKey = today.getUTCFullYear() + "-" + (today.getUTCMonth() + 1).toString().padStart(2, "0") + "-" + today.getUTCDate().toString().padStart(2, "0"); // day
-
-    // Subscribe to messages
-    const messagesRef = indexRef.get("dates").get(dateKey);
-    const messages = useGunNode(messagesRef);
-
-    createEffect(() => {
-        //console.log("Messages", messages());
-        setCircles(messages());
-    });
 
     const sendMessage = () => {
         if (message().trim() === "") return;
@@ -47,7 +26,7 @@ const Chat: Component<ChatProps> = () => {
                 createdAt.getUTCDate().toString().padStart(2, "0"),
         ];
 
-        let newMessage: any = { message: message(), createdAt: createdAt.toISOString() };
+        let newMessage: any = { message: message(), createdAt: createdAt.toISOString(), type: "message" };
 
         // Get user coordinates
         let geohashKeys: any[] = [];
@@ -62,7 +41,12 @@ const Chat: Component<ChatProps> = () => {
             const geohashFull = Geohash.encode(latitude, longitude); // Default precision (12)
             const geohash = geohashFull.substring(0, 4); // Precision 4
             geohashKeys = [geohash.substring(0, 2), geohash.substring(0, 3), geohash];
-            newMessage.location = { latitude, longitude, geohash: geohashFull };
+
+            newMessage.latitude = latitude;
+            newMessage.longitude = longitude;
+            newMessage.geohash = geohashFull;
+
+            //newMessage.location = { latitude, longitude, geohash: geohashFull }; // creates subnode which makes data harder to retrieve as nested nodes need to be loaded
         }
 
         // Save the message under user node with a unique key
@@ -72,7 +56,7 @@ const Chat: Component<ChatProps> = () => {
 
         // Store the message key under the corresponding index nodes
         // global index
-        indexRef.get("messages").set(messageRef);
+        //indexRef.get("messages").set(messageRef);
 
         // date index
         createdAtKeys.forEach((dateKey: any) => {
@@ -108,13 +92,15 @@ const Chat: Component<ChatProps> = () => {
             <div class="flex">
                 <div class="p-3">
                     <ul>
-                        <For each={messages()}>
-                            {(item) => (
-                                <li class="bg-white rounded-lg shadow-lg p-3 mb-3">
-                                    {item.message} ({new Date(item.createdAt).toLocaleTimeString()})
-                                </li>
-                            )}
-                        </For>
+                        {circles() && (
+                            <For each={Object.values(circles())?.filter((x: any) => x.type === "message")}>
+                                {(item: any) => (
+                                    <li class="bg-white rounded-lg shadow-lg p-3 mb-3">
+                                        {item.message} ({new Date(item.createdAt).toLocaleTimeString()})
+                                    </li>
+                                )}
+                            </For>
+                        )}
                     </ul>
                 </div>
             </div>

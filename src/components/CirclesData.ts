@@ -26,7 +26,10 @@ export interface Circle {
     description?: string;
     content?: string;
     location?: Location;
+    type: string;
 }
+
+export interface Message extends Circle {}
 
 export interface Location {
     latitude: number;
@@ -59,7 +62,7 @@ export { isMobile, setIsMobile };
 const [circle, setCircle] = createSignal<Circle | null>(null);
 export { circle, setCircle };
 
-const [circles, setCircles] = createSignal<Circle[] | null>(null);
+const [circles, setCircles] = createSignal<any | null>(null);
 export { circles, setCircles };
 
 // Global state setters

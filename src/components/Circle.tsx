@@ -2,7 +2,7 @@ import { createEffect, createSignal, createMemo, onCleanup, For, Component } fro
 import { useParams } from "@solidjs/router";
 import Gun from "gun";
 import CircleHeader from "./CircleHeader";
-import { circle, setCircle, circlesRef, gun, isMobile, Circle as CircleType } from "./CirclesData";
+import { circle, setCircle, circles, setCircles, indexRef, gun, circlesRef, isMobile, Circle as CircleType } from "./CirclesData";
 import Chat from "./Chat";
 import Map from "./Map";
 import CirclePicture from "./CirclePicture";
@@ -17,9 +17,25 @@ const Circle: Component<CircleComponentProps> = ({ onBack }) => {
     const [toggledComponents, setToggledComponents] = createSignal(["chat"]);
     const menuItems = ["about", "chat", "video", "calendar", "map"];
 
-    const createNewCircle = (id: string): CircleType => {
+    // Filter options for circles
+    const today = new Date();
+    const dateKey = today.getUTCFullYear() + "-" + (today.getUTCMonth() + 1).toString().padStart(2, "0"); // month
+
+    // Subscribe to circles
+    const filteredCirclesRef = indexRef.get("dates").get(dateKey);
+    filteredCirclesRef.map().on((value: any, key: string) => {
+        // map() subscribes to list of messages and on() to each individual message. Replace on() with once() to only subscribe to list of messages and not individual messages.
+        if (!value) return;
+        const newCircles = Object.assign({}, circles());
+        newCircles[key] = value;
+        setCircles(newCircles);
+    });
+    onCleanup(() => filteredCirclesRef.off());
+
+    const createNewCircle = (name: string, type: string): CircleType => {
         return {
-            name: id,
+            name,
+            type,
         };
     };
 
@@ -31,16 +47,15 @@ const Circle: Component<CircleComponentProps> = ({ onBack }) => {
         console.log("Opening circle with ID", circleId);
         let circleRef = circlesRef.get(circleId);
 
-        if (circleId === "all") {
-            circleRef.put({ name: "All", picture: "./images/all.png" }, () => {
-                console.log(`Updating all circle.`);
-            });
-        }
+        // subscribing to circle data
+        circleRef.on((circleData, key) => {
+            console.log("circleRef.on()", JSON.stringify(circleData));
+        });
 
         // load circle data
         circleRef.once((circleData) => {
             if (!circleData) {
-                const newCircle = createNewCircle(circleId);
+                const newCircle = createNewCircle(circleId, "circle");
                 circleRef.put(newCircle, () => {
                     console.log(`Circle with ID "${circleId}" created.`);
                 });
@@ -49,10 +64,6 @@ const Circle: Component<CircleComponentProps> = ({ onBack }) => {
                 console.log("Loading circle", JSON.stringify(circleData, null, 2));
                 setCircle(circleData);
             }
-        });
-
-        circleRef.on((circleData, key) => {
-            console.log("test");
         });
 
         return () => {

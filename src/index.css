@@ -45,3 +45,19 @@ code {
 .order-4 {
     order: 4;
 }
+
+.navbutton {
+    background-color: #ebebeb;
+    color: #333;
+    border-radius: 20px;
+    font-size: 14px;
+}
+
+.navbutton-toggled {
+    background-color: #d5376d;
+    color: white;
+}
+/* #d5376d */
+/* #f10656 */
+/* #4290cf */
+/* #c93b6b */

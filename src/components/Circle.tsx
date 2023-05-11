@@ -117,16 +117,16 @@ const Circle: Component<CircleComponentProps> = ({ onBack }) => {
                             <FiArrowLeft color="black" size="28px" />
                         </button>
                     )}
-                    <CirclePicture circle={circle()} size="60px" className="mr-3" />
-                    <h2>{circle()?.name}</h2>
+                    <CirclePicture circle={circle()} size="56px" className="mr-3" />
+                    <h2 class="text-xl font-medium">{circle()?.name}</h2>
                 </div>
 
                 <nav class="bg-white p-2">
                     <div class="flex">
                         {menuItems.map((component) => (
                             <button
-                                class={`mr-2 px-4 py-2 rounded focus:outline-none ${
-                                    toggledComponents().includes(component) ? "bg-blue-500 text-white" : "bg-gray-300"
+                                class={`mr-2 px-6 py-1 rounded focus:outline-none navbutton ${
+                                    toggledComponents().includes(component) ? "navbutton-toggled" : ""
                                 }`}
                                 onClick={() => toggleComponent(component)}
                             >

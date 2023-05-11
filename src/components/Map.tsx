@@ -158,7 +158,7 @@ const Map: Component = () => {
         let scene = sceneState();
         let camera = cameraState();
         let renderer = rendererState();
-        let circlesAr = circles();
+        let circlesAr = circles() ? Object.values(circles()) : [];
         if (!scene || !camera || !renderer || !circlesAr) return;
 
         console.log("updating pins", circlesAr?.length);
@@ -166,9 +166,9 @@ const Map: Component = () => {
         // Remove all existing pins before creating new ones
         scene.children.filter((child) => child.userData.pin).forEach((child) => scene?.remove(child));
 
-        circlesAr.forEach((circle) => {
-            if (circle.location?.latitude && circle.location?.longitude) {
-                const pin = createPin(circle.location.latitude, circle.location.longitude);
+        circlesAr.forEach((circle: any) => {
+            if (circle.latitude && circle.longitude) {
+                const pin = createPin(circle.latitude, circle.longitude);
                 pin.userData.pin = true; // Add a flag to identify pin objects
                 scene?.add(pin);
             }

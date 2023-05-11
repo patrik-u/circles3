@@ -65,6 +65,9 @@ export { circle, setCircle };
 const [circles, setCircles] = createSignal<any | null>(null);
 export { circles, setCircles };
 
+const [toggleResize, setToggleResize] = createSignal<boolean>(false);
+export { toggleResize, setToggleResize };
+
 // Global state setters
 export const setCircleRef = (circleRef: any) => {
     setState("circleRef", circleRef);

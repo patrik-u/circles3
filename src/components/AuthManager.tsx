@@ -144,8 +144,8 @@ export default function AuthManager() {
                 </div>
             </dialog>
             {state.isLoggedIn && (
-                <button type="button" class="absolute bg-heading top-4 right-2 p-1 text-white font-semibold rounded-md " onClick={signOut}>
-                    <CgLogOut size="24px" />
+                <button type="button" class="absolute bg- top-4 right-2 p-1 font-semibold rounded-md" style="background-color: #ebebeb;" onClick={signOut}>
+                    <CgLogOut size="24px" color="#666" />
                 </button>
             )}
         </>

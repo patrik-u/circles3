@@ -1,6 +1,6 @@
 import { createEffect, createSignal, onCleanup, Accessor, Component } from "solid-js";
 import * as THREE from "three";
-import { Circle, circles } from "./CirclesData";
+import { Circle, circles, toggleResize, setToggleResize } from "./CirclesData";
 import { TextureLoader } from "three/src/loaders/TextureLoader";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 
@@ -10,6 +10,13 @@ const Map: Component = () => {
     const [sceneState, setSceneState] = createSignal<THREE.Scene | null>(null);
     const [cameraState, setCameraState] = createSignal<THREE.PerspectiveCamera | null>(null);
     const [rendererState, setRendererState] = createSignal<THREE.WebGLRenderer | null>(null);
+
+    createEffect(() => {
+        if (toggleResize()) {
+            onWindowResize();
+            setToggleResize(false);
+        }
+    });
 
     const init = () => {
         console.log("initializing three js");
@@ -27,7 +34,7 @@ const Map: Component = () => {
         const material = new THREE.MeshBasicMaterial({ color: 0x5b77c5, wireframe: true });
         camera.position.z = 2;
 
-        const earthMap = new TextureLoader().load("./images/1_earth_8k.jpg");
+        const earthMap = new TextureLoader().load("./images/1_earth_sm.jpg");
         const controls = new OrbitControls(camera, renderer.domElement);
         controls.enablePan = false; // Disable panning
         controls.minDistance = 1.002; // Set a minimum distance from the sphere

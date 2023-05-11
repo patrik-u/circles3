@@ -2,7 +2,7 @@ import { createEffect, createSignal, createMemo, onCleanup, For, Component } fro
 import { useParams } from "@solidjs/router";
 import Gun from "gun";
 import CircleHeader from "./CircleHeader";
-import { circle, setCircle, circles, setCircles, indexRef, gun, circlesRef, isMobile, Circle as CircleType } from "./CirclesData";
+import { circle, setCircle, circles, setCircles, indexRef, gun, circlesRef, isMobile, Circle as CircleType, setToggleResize } from "./CirclesData";
 import Chat from "./Chat";
 import Map from "./Map";
 import CirclePicture from "./CirclePicture";
@@ -83,6 +83,7 @@ const Circle: Component<CircleComponentProps> = ({ onBack }) => {
                     setToggledComponents([...toggledComponents(), component]);
                 }
             }
+            setToggleResize(true);
         }
     };
 
@@ -122,10 +123,10 @@ const Circle: Component<CircleComponentProps> = ({ onBack }) => {
                 </div>
 
                 <nav class="bg-white p-2">
-                    <div class="flex">
+                    <div class="flex" style="margin-left: 5px;">
                         {menuItems.map((component) => (
                             <button
-                                class={`mr-2 px-6 py-1 rounded focus:outline-none navbutton ${
+                                class={`mr-2 px-6 py-1 hover:bg-blue-200 transition-colors duration-200  rounded focus:outline-none navbutton ${
                                     toggledComponents().includes(component) ? "navbutton-toggled" : ""
                                 }`}
                                 onClick={() => toggleComponent(component)}

@@ -111,7 +111,7 @@ const App: Component = () => {
                     <CircleSelect onSelect={onCircleSelect} circleSelectCollapsed={circleSelectCollapsed} />
                     <div class="hidden md:block absolute right-0 top-0 h-full w-2 cursor-col-resize" onMouseDown={onMouseDown}></div>
                 </div>
-                <div class="h-full w-full md:w-full" style={isMobile() ? `${windowWidth()}px; flex-shrink: 0;` : "" + `background-color: #f5f5f5;`}>
+                <div class="h-full w-full md:w-full" style={isMobile() ? `width: ${windowWidth()}px; flex-shrink: 0;` : "" + `background-color: #f5f5f5;`}>
                     <Routes>
                         {/* <Route path="/" element={<Navigate href="/all" />} />; */}
                         <Route path="/:circleId" element={<Circle onBack={onBack} />} />

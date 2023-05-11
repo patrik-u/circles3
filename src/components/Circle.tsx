@@ -23,6 +23,7 @@ const Circle: Component<CircleComponentProps> = ({ onBack }) => {
 
     // Subscribe to circles
     const filteredCirclesRef = indexRef.get("dates").get(dateKey);
+
     filteredCirclesRef.map().on((value: any, key: string) => {
         // map() subscribes to list of messages and on() to each individual message. Replace on() with once() to only subscribe to list of messages and not individual messages.
         if (!value) return;
@@ -110,48 +111,30 @@ const Circle: Component<CircleComponentProps> = ({ onBack }) => {
             <div class="flex flex-col h-screen">
                 {/* <CircleHeader onBack={onBack} /> */}
 
-                <div class="bg-heading py-3 px-6 flex items-center justify-start">
+                <div class="bg-white py-3 px-6 flex items-center justify-start">
                     {isMobile() && (
                         <button onClick={onBack} class="mr-3">
-                            <FiArrowLeft color="white" size="28px" />
+                            <FiArrowLeft color="black" size="28px" />
                         </button>
                     )}
-                    <CirclePicture circle={circle()} size="40px" className="mr-3" />
-                    <h2 class="text-white">{circle()?.name}</h2>
-                    {!isMobile() && (
-                        <nav class="ml-16">
-                            <div class="flex">
-                                {menuItems.map((component) => (
-                                    <button
-                                        class={`mr-2 px-4 py-2 rounded focus:outline-none ${
-                                            toggledComponents().includes(component) ? "bg-blue-500 text-white" : "bg-gray-300"
-                                        }`}
-                                        onClick={() => toggleComponent(component)}
-                                    >
-                                        {component.charAt(0).toUpperCase() + component.slice(1)}
-                                    </button>
-                                ))}
-                            </div>
-                        </nav>
-                    )}
+                    <CirclePicture circle={circle()} size="60px" className="mr-3" />
+                    <h2>{circle()?.name}</h2>
                 </div>
 
-                {isMobile() && (
-                    <nav class="bg-gray-200 p-2">
-                        <div class="flex">
-                            {menuItems.map((component) => (
-                                <button
-                                    class={`mr-2 px-4 py-2 rounded focus:outline-none ${
-                                        toggledComponents().includes(component) ? "bg-blue-500 text-white" : "bg-gray-300"
-                                    }`}
-                                    onClick={() => toggleComponent(component)}
-                                >
-                                    {component.charAt(0).toUpperCase() + component.slice(1)}
-                                </button>
-                            ))}
-                        </div>
-                    </nav>
-                )}
+                <nav class="bg-white p-2">
+                    <div class="flex">
+                        {menuItems.map((component) => (
+                            <button
+                                class={`mr-2 px-4 py-2 rounded focus:outline-none ${
+                                    toggledComponents().includes(component) ? "bg-blue-500 text-white" : "bg-gray-300"
+                                }`}
+                                onClick={() => toggleComponent(component)}
+                            >
+                                {component.charAt(0).toUpperCase() + component.slice(1)}
+                            </button>
+                        ))}
+                    </div>
+                </nav>
 
                 <div class="flex flex-grow">
                     {toggledComponents().includes("about") && <div class={getComponentClass("about")}>About</div>}

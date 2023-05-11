@@ -13,6 +13,7 @@ const CircleSelect: Component<CircleSelectProps> = (props) => {
         {
             name: "All",
             picture: "./images/all.png",
+            type: "circle",
         },
         // {
         //     name: "Test",

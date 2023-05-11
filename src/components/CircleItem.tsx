@@ -18,14 +18,9 @@ const CircleItem: Component<CircleItemProps> = (props) => {
     };
 
     return (
-        <div
-            class={`flex items-center p-3 cursor-pointer hover:bg-gray-100 transition-colors duration-200 ${
-                props.circle === props.selectedCircle?.() ? "bg-gray-200" : "bg-white"
-            } ${props.className}`}
-            onClick={handleClick}
-        >
-            <CirclePicture circle={props.circle} size="40px" />
-            {!props.itemCollapsed?.() && <h3 class="ml-3">{props.circle.name}</h3>}
+        <div class={`flex items-center p-3 cursor-pointer hover:bg-gray-600 transition-colors duration-200 ${props.className}`} onClick={handleClick}>
+            <CirclePicture circle={props.circle} size="30px" />
+            {!props.itemCollapsed?.() && <h3 class="ml-3 text-white">{props.circle.name}</h3>}
         </div>
     );
 };

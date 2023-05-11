@@ -104,8 +104,8 @@ const App: Component = () => {
                     class={`h-full w-full md:w-72 relative`}
                     style={
                         windowWidth() >= 768
-                            ? `width: ${panelWidth()}rem; max-width: ${panelWidth()}rem; min-width: ${panelWidth()}rem;`
-                            : `width: ${windowWidth()}px; flex-shrink: 0;`
+                            ? `width: ${panelWidth()}rem; max-width: ${panelWidth()}rem; min-width: ${panelWidth()}rem;  background-color: #212121;`
+                            : `width: ${windowWidth()}px; flex-shrink: 0; background-color: #212121;`
                     }
                 >
                     <CircleSelect onSelect={onCircleSelect} circleSelectCollapsed={circleSelectCollapsed} />

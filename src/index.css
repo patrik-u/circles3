@@ -18,6 +18,11 @@ html {
     width: 100%;
 }
 
+#root {
+    height: 100%;
+    width: 100%;
+}
+
 code {
     font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New", monospace;
 }
@@ -47,21 +52,32 @@ code {
 }
 
 .navbutton {
-    background-color: #ebebeb;
-    color: #333;
     border-radius: 20px;
     font-size: 14px;
 }
 
 .navbutton-toggled {
-    background-color: #4290cf;
-    color: white;
+    background-color: #1e5785;
+    color: rgb(212, 212, 212);
 }
 
-.chatbg {
-    background-image: url("./images/bgtile.png");
-    background-repeat: repeat;
+.chatmessage {
+    background: linear-gradient(90deg, #717171 0%, #181818 100%);
+    /* background: linear-gradient(90deg, #66aef9 0%, #140a3f 100%); */
 }
+
+textarea {
+    border: none;
+    overflow: auto;
+    outline: none;
+
+    -webkit-box-shadow: none;
+    -moz-box-shadow: none;
+    box-shadow: none;
+
+    resize: none; /*remove the resize handle on the bottom right*/
+}
+
 /* #d5376d */
 /* #f10656 */
 /* #4290cf */

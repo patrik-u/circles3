@@ -46,10 +46,10 @@ const Map: Component = () => {
         //controls.dynamicDampingFactor = 0.1;
 
         controls.target = new THREE.Vector3(0, 0, 0); // Set the target to the center of the sphere
-        const pointLight = new THREE.PointLight(0xdddddd, 1);
+        const pointLight = new THREE.PointLight(0xe0e0e0, 1);
         pointLight.position.set(10, 10, 10);
         scene.add(pointLight);
-        const ambientLight = new THREE.AmbientLight(0x404040);
+        const ambientLight = new THREE.AmbientLight(0x202020);
         scene.add(ambientLight);
         const globeMesh = new THREE.Mesh(new THREE.SphereGeometry(1, 32, 32), new THREE.MeshStandardMaterial({ map: earthMap }));
         scene.add(globeMesh);
@@ -111,7 +111,6 @@ const Map: Component = () => {
         const width = mapContainerRef.clientWidth;
         const height = mapContainerRef.clientHeight;
 
-        console.log("width", width);
         let camera = cameraState();
         let renderer = rendererState();
         if (!camera || !renderer) return;
@@ -164,7 +163,7 @@ const Map: Component = () => {
     });
 
     return (
-        <div class="map-container w-full h-full relative" ref={mapContainerRef!}>
+        <div class="map-container w-full h-full absolute z-0" ref={mapContainerRef!}>
             <div class="map absolute" ref={mapRef!}></div>
         </div>
     );

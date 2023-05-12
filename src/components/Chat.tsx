@@ -1,8 +1,8 @@
 import { createEffect, createSignal, onCleanup, For, Component } from "solid-js";
 import { gun, indexRef, circles, setCircles, circlesRef, state, setUserRef, setIsLoggedIn, Circle } from "./CirclesData";
 import Geohash from "latlon-geohash";
-import useGunNode from "./CircleNode";
 import Map from "./Map";
+import { IoSend } from "solid-icons/io";
 
 interface ChatProps {}
 
@@ -89,13 +89,17 @@ const Chat: Component<ChatProps> = () => {
 
     return (
         <>
-            <div class="flex h-full chatbg">
-                <div class="p-3">
+            <div class="flex h-full pointer-events-none">
+                <div class="p-3 w-full mt-24">
                     <ul>
                         {circles() && (
                             <For each={Object.values(circles())?.filter((x: any) => x.type === "message")}>
                                 {(item: any) => (
-                                    <li class="bg-white rounded-lg shadow-lg p-3 mb-3">
+                                    <li
+                                        class="bg-white chatmessage rounded-3xl shadow-lg p-2 pl-3 pr-3 min-w-3 mb-2 pointer-events-auto text-sm"
+                                        // style="background: linear-gradient(90deg, rgb(51 132 187) 0%, rgb(0 61 124) 100%); color: white;"
+                                        style="max-width: 700px; color: white;"
+                                    >
                                         {item.message} ({new Date(item.createdAt).toLocaleTimeString()})
                                     </li>
                                 )}
@@ -104,11 +108,19 @@ const Chat: Component<ChatProps> = () => {
                     </ul>
                 </div>
             </div>
-            <div class="bg-white shadow-lg p-1 mt-auto w-full relative">
-                <textarea class="w-full" value={message()} onInput={(e) => setMessage((e.target as HTMLTextAreaElement).value)} onKeyDown={handleKeyDown} />
-                <button class="absolute bg-blue-200 top-2 right-2 mr-2 px-4 py-2 rounded" onClick={sendMessage}>
-                    Send
-                </button>
+            <div class="p-3 mt-auto w-full relative pointer-events-auto">
+                <div class="bg-inputBox shadow-lg rounded-3xl overflow-hidden">
+                    <textarea
+                        class="w-full resize-none bg-inputBox text-white"
+                        style="height: 35px; padding-left: 15px; padding-top: 7px;"
+                        value={message()}
+                        onInput={(e) => setMessage((e.target as HTMLTextAreaElement).value)}
+                        onKeyDown={handleKeyDown}
+                    />
+                    <button class="absolute top-5 right-8" onClick={sendMessage}>
+                        <IoSend color="#e5e5e5" size="22px" />
+                    </button>
+                </div>
             </div>
         </>
     );

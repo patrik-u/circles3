@@ -23,7 +23,10 @@ const Map: Component = () => {
 
         const width = mapContainerRef.clientWidth;
         const height = mapContainerRef.clientHeight;
+
         const scene = new THREE.Scene();
+        //scene.background = new THREE.Color(0xeeeeee);
+
         const camera = new THREE.PerspectiveCamera(75, width / height, 0.001, 1000);
         const renderer = new THREE.WebGLRenderer();
         renderer.setSize(width, height);
@@ -78,7 +81,6 @@ const Map: Component = () => {
             //const rotateSpeedFactor = (distance - controls.minDistance) / (2 - controls.minDistance);
             // Set the pan speed based on the factor, using a linear function
             controls.rotateSpeed = 0.27; // Math.min(Math.max(0.001, rotateSpeedFactor), 5);
-            controls.update();
             controls.update();
             renderer.render(scene, camera);
         };

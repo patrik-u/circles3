@@ -32,7 +32,7 @@ const App: Component = () => {
 
                 <Routes>
                     <Route path="/" element={<Navigate href="/all" />} />
-                    <Route path="/:circleId" element={<CircleManager />} />
+                    <Route path="/*" element={<CircleManager />} />
                 </Routes>
             </div>
 

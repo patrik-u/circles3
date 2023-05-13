@@ -1,4 +1,4 @@
-import { createSignal } from "solid-js";
+import { createSignal, Signal } from "solid-js";
 import { createStore } from "solid-js/store";
 import Gun from "gun";
 import "gun/sea";
@@ -87,5 +87,32 @@ export const setUserLocation = (location: any) => {
         state.userRef.get("location").put(location);
     }
 };
+
+export const createStoredSignal = <T>(key: string, defaultValue: T, storage = localStorage): Signal<T> => {
+    const storedValue = storage.getItem(key);
+    const initialValue = storedValue !== null ? (JSON.parse(storedValue) as T) : defaultValue;
+
+    const [value, setValue] = createSignal<T>(initialValue);
+
+    const setValueAndStore = ((newValue: Exclude<T, Function>) => {
+        setValue(newValue);
+        if (newValue === undefined) {
+            storage.removeItem(key);
+        } else {
+            storage.setItem(key, JSON.stringify(newValue));
+        }
+        return newValue;
+    }) as typeof setValue;
+
+    const removeValue = () => {
+        setValue(undefined as Exclude<T, Function>);
+        storage.removeItem(key);
+    };
+
+    return [value, setValueAndStore];
+};
+
+const [isDarkTheme, setIsDarkTheme] = createStoredSignal<boolean | undefined>("isDarkTheme", true);
+export { isDarkTheme, setIsDarkTheme };
 
 //#endregion

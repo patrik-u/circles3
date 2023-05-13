@@ -1,7 +1,7 @@
 import { Routes, Route, Navigate, useNavigate } from "@solidjs/router";
 import type { Component } from "solid-js";
 import { createSignal, onCleanup, createEffect } from "solid-js";
-import { setIsMobile } from "./components/CirclesData";
+import { setIsMobile, isDarkTheme } from "./components/CirclesData";
 import CircleManager from "./components/CircleManager";
 import AuthManager from "./components/AuthManager";
 import LocationManager from "./components/LocationManager";
@@ -17,6 +17,16 @@ const App: Component = () => {
     createEffect(() => {
         let newIsMobile = windowWidth() < 768;
         setIsMobile(newIsMobile);
+    });
+
+    createEffect(() => {
+        if (isDarkTheme() || (isDarkTheme() === undefined && window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches)) {
+            document.documentElement.classList.add("dark");
+            console.log("using dark theme");
+        } else {
+            document.documentElement.classList.remove("dark");
+            console.log("using light theme");
+        }
     });
 
     console.log("APP_NAMESPACE", import.meta.env.VITE_APP_NAMESPACE);

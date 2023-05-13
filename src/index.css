@@ -54,16 +54,40 @@ code {
 .navbutton {
     border-radius: 20px;
     font-size: 14px;
+    background-color: #e2e2e2;
+}
+
+.navbutton-dark {
+    border-radius: 20px;
+    font-size: 14px;
+    background-color: #262626;
 }
 
 .navbutton-toggled {
-    background-color: #1e5785;
+    background-color: #325e81;
     color: rgb(212, 212, 212);
 }
 
-.chatmessage {
-    background: linear-gradient(90deg, #717171 0%, #181818 100%);
+.navbutton-toggled-dark {
+    background-color: #2f3c50;
+    color: rgb(212, 212, 212);
+}
+
+.chatmessage-dark {
+    background: linear-gradient(90deg, #9ea6bd 0%, #485067 100%);
+    /* background: linear-gradient(90deg, #73788a 0%, #878c99 100%); */
+    /* background: linear-gradient(90deg, #717171 0%, #3f3f3f 100%); */
+    /* background: linear-gradient(90deg, #878da1 0%, #9ca1af 100%); */
+    /* background: linear-gradient(90deg, #7b8297 0%, #272b3a 100%); */
+    /* background: linear-gradient(90deg, #717171 0%, #181818 100%); */
     /* background: linear-gradient(90deg, #66aef9 0%, #140a3f 100%); */
+    color: white;
+}
+
+.chatmessage {
+    background: linear-gradient(90deg, #ffffff 0%, #bdcfff 100%);
+    background: linear-gradient(90deg, #e0e0e0 0%, #f5f5f5 100%);
+    color: black;
 }
 
 textarea {

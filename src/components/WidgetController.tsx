@@ -2,11 +2,25 @@ import { createEffect, createSignal, createMemo, onCleanup, For, Component } fro
 import { useParams } from "@solidjs/router";
 import Gun from "gun";
 import CircleHeader from "./CircleHeader";
-import { circle, setCircle, circles, setCircles, indexRef, gun, circlesRef, isMobile, Circle as CircleType, setToggleResize } from "./CirclesData";
+import {
+    circle,
+    setCircle,
+    circles,
+    setCircles,
+    indexRef,
+    gun,
+    circlesRef,
+    isMobile,
+    Circle as CircleType,
+    setToggleResize,
+    isDarkTheme,
+    setIsDarkTheme,
+} from "./CirclesData";
 import Chat from "./Chat";
 import Map from "./Map";
 import CirclePicture from "./CirclePicture";
 import { FiArrowLeft } from "solid-icons/fi";
+import { FaSolidSun, FaSolidMoon } from "solid-icons/fa";
 
 interface CircleComponentProps {}
 
@@ -43,6 +57,10 @@ const WidgetController: Component<CircleComponentProps> = () => {
         return `flex flex-col ${fixedSize ? "min-w-96 w-96 flex-shrink-0" : "flex-grow"} order-${index + 1}`;
     };
 
+    const toggleTheme = () => {
+        setIsDarkTheme(!isDarkTheme());
+    };
+
     // bg: #262626
     // color: white
     // selected: #1e5785
@@ -53,14 +71,22 @@ const WidgetController: Component<CircleComponentProps> = () => {
                 <div class="flex justify-center" style="margin-left: 5px;">
                     {menuItems.map((component) => (
                         <button
-                            class={`mr-2 px-6 py-1 bg-navbutton text-gray-200 hover:bg-navbuttonHover transition-colors duration-200 rounded focus:outline-none navbutton ${
-                                toggledWidgets().includes(component) ? "navbutton-toggled" : ""
+                            class={`mr-2 px-6 py-1 text-black dark:text-gray-200 hover:bg-navbuttonHover dark:hover:bg-navbuttonHoverDark transition-colors duration-200 rounded focus:outline-none navbutton navbutton${
+                                toggledWidgets().includes(component) ? "-toggled" : ""
+                            }${isDarkTheme() ? "-dark" : ""} }
                             }`}
                             onClick={() => toggleWidget(component)}
                         >
                             {component.charAt(0).toUpperCase() + component.slice(1)}
                         </button>
                     ))}
+
+                    <button
+                        class="rounded-full pl-2 pr-2 bg-navbutton dark:bg-navbuttonDark hover:bg-navbuttonHover dark:hover:bg-navbuttonHover text-black dark:text-gray-200"
+                        onclick={toggleTheme}
+                    >
+                        {isDarkTheme() ? <FaSolidSun /> : <FaSolidMoon />}
+                    </button>
                 </div>
             </div>
 

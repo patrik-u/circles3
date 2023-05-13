@@ -14,7 +14,7 @@ module.exports = {
                 navbuttonSelectedDark: "#2f3c50",
                 navbuttonHoverDark: "#3175ad",
 
-                inputBox: "#d1d1d1",
+                inputBox: "#cfcfcf",
                 inputBoxDark: "#2f3c50",
             },
         },

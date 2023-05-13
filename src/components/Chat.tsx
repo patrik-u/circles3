@@ -1,5 +1,5 @@
 import { createEffect, createSignal, onCleanup, For, Component } from "solid-js";
-import { gun, indexRef, circles, setCircles, circlesRef, state, setUserRef, setIsLoggedIn, Circle, isDarkTheme } from "./CirclesData";
+import { gun, indexRef, circles, setCircles, circlesRef, state, setUserRef, setIsLoggedIn, Circle, isDarkTheme, isMobile } from "./CirclesData";
 import Geohash from "latlon-geohash";
 import Map from "./Map";
 import { IoSend } from "solid-icons/io";
@@ -100,7 +100,7 @@ const Chat: Component<ChatProps> = () => {
                                             isDarkTheme() ? "chatmessage-dark" : "chatmessage"
                                         } rounded-3xl shadow-lg p-2 pl-3 pr-3 min-w-3 mb-2 pointer-events-auto text-sm`}
                                         // style="background: linear-gradient(90deg, rgb(51 132 187) 0%, rgb(0 61 124) 100%); color: white;"
-                                        style="max-width: 700px;"
+                                        style={isMobile() ? "max-width: 700px;" : ""}
                                     >
                                         {item.message} ({new Date(item.createdAt).toLocaleTimeString()})
                                     </li>
@@ -119,8 +119,8 @@ const Chat: Component<ChatProps> = () => {
                         onInput={(e) => setMessage((e.target as HTMLTextAreaElement).value)}
                         onKeyDown={handleKeyDown}
                     />
-                    <button class="absolute top-5 right-8 text-black dark:text-gray-300" onClick={sendMessage}>
-                        <IoSend size="22px" />
+                    <button class="absolute top-5 right-8" onClick={sendMessage}>
+                        <IoSend color={isDarkTheme() ? "#cccccc" : "#1e59b1"} size="22px" />
                     </button>
                 </div>
             </div>

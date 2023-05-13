@@ -50,9 +50,12 @@ const WidgetController: Component<CircleComponentProps> = () => {
 
     const getWidgetClass = (component: string): string => {
         let index = toggledWidgets().indexOf(component);
-        let fixedSize = (toggledWidgets()[0] === component || toggledWidgets()[2] === component) && toggledWidgets().length !== 1;
-        if (component === "chat") {
-            fixedSize = true;
+        let fixedSize = false;
+        if (!isMobile()) {
+            fixedSize = (toggledWidgets()[0] === component || toggledWidgets()[2] === component) && toggledWidgets().length !== 1;
+            if (component === "chat") {
+                fixedSize = true;
+            }
         }
         return `flex flex-col ${fixedSize ? "min-w-96 w-96 flex-shrink-0" : "flex-grow"} order-${index + 1}`;
     };

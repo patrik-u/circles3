@@ -55,21 +55,30 @@ code {
     border-radius: 20px;
     font-size: 14px;
     background-color: #e2e2e2;
+
+    /* border-radius: 20px;
+    font-size: 14px;
+    background-color: #262626;
+    color: rgb(229 231 235); */
 }
 
 .navbutton-dark {
     border-radius: 20px;
     font-size: 14px;
-    background-color: #262626;
+    background-color: #3c3d42;
+    /* background-color: #262626; when bg is black */
 }
 
 .navbutton-toggled {
-    background-color: #325e81;
+    /* background-color: #325e81;
+    color: rgb(212, 212, 212); */
+
+    background-color: #d18922;
     color: rgb(212, 212, 212);
 }
 
 .navbutton-toggled-dark {
-    background-color: #2f3c50;
+    background-color: #314b8f;
     color: rgb(212, 212, 212);
 }
 

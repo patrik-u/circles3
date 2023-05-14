@@ -1,15 +1,25 @@
 import { createEffect, createSignal, onCleanup, Accessor, Component } from "solid-js";
 import * as THREE from "three";
-import { Circle, circles, toggleResize, setToggleResize } from "./CirclesData";
+import { Circle, circles, toggleResize, setToggleResize, isDarkTheme } from "./CirclesData";
 import { TextureLoader } from "three/src/loaders/TextureLoader";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 
 const Map: Component = () => {
     let mapRef: HTMLDivElement;
     let mapContainerRef: HTMLDivElement;
+    const [hasInit, setHasInit] = createSignal(false);
     const [sceneState, setSceneState] = createSignal<THREE.Scene | null>(null);
     const [cameraState, setCameraState] = createSignal<THREE.PerspectiveCamera | null>(null);
     const [rendererState, setRendererState] = createSignal<THREE.WebGLRenderer | null>(null);
+    const [controlsState, setControlsState] = createSignal<OrbitControls | null>(null);
+
+    //const bgLight = 0x202135;
+    const bgLight = 0x80bfea; //0x84a5ff;
+    //const bgLight = 0x000000;
+    //const bgDark = 0x000000;
+    //#181929
+    //const bgDark = 0x202135;
+    const bgDark = 0x181929;
 
     createEffect(() => {
         if (toggleResize()) {
@@ -18,14 +28,65 @@ const Map: Component = () => {
         }
     });
 
+    //3c3d42
+    //42475c
+
+    createEffect(() => {
+        let scene = sceneState();
+        if (scene) {
+            // #bdcefd
+            // #84a5ff
+            scene.background = new THREE.Color(isDarkTheme() ? bgDark : bgLight);
+        }
+    });
+
+    const animate = () => {
+        let scene = sceneState();
+        let camera = cameraState();
+        let renderer = rendererState();
+        let controls = controlsState();
+        if (!scene || !camera || !renderer || !controls) return;
+
+        requestAnimationFrame(animate);
+        //globeMesh.rotation.y -= 0.002;
+        // Calculate the distance from the camera to the target
+        const distance = camera.position.distanceTo(controls.target);
+        // if (distance != previousDistance) {
+        //     console.log(distance);
+        //     previousDistance = distance;
+        // }
+        // Calculate a factor for the zoom speed
+        const zoomSpeedFactor = (distance - controls.minDistance) / (2 - controls.minDistance);
+        // Set the zoom speed based on the factor, using a quadratic function
+        controls.zoomSpeed = Math.min(Math.max(0.001, zoomSpeedFactor), 5);
+        // Adjust the zoomSpeed based on the distance
+        //controls.zoomSpeed = THREE.MathUtils.lerp(0.1, 10, (distance - controls.minDistance) / (controls.maxDistance - controls.minDistance));
+        // if (controls.zoomSpeed != previousZoomSpeed) {
+        //     console.log("zoomSpeed", controls.zoomSpeed);
+        //     previousZoomSpeed = controls.zoomSpeed;
+        // }
+        //controls.zoomSpeed = 0.5;
+        // Calculate a factor for the pan speed
+        //const rotateSpeedFactor = (distance - controls.minDistance) / (2 - controls.minDistance);
+        // Set the pan speed based on the factor, using a linear function
+        controls.rotateSpeed = 0.27; // Math.min(Math.max(0.001, rotateSpeedFactor), 5);
+        controls.update();
+        renderer.render(scene, camera);
+    };
+
     const init = () => {
+        if (hasInit()) return;
+
+        setHasInit(true);
+
         console.log("initializing three js");
 
         const width = mapContainerRef.clientWidth;
         const height = mapContainerRef.clientHeight;
 
         const scene = new THREE.Scene();
-        //scene.background = new THREE.Color(0xeeeeee);
+        //#84a5ff
+        scene.background = new THREE.Color(isDarkTheme() ? bgDark : bgLight);
 
         const camera = new THREE.PerspectiveCamera(75, width / height, 0.001, 1000);
         const renderer = new THREE.WebGLRenderer();
@@ -49,7 +110,7 @@ const Map: Component = () => {
         const pointLight = new THREE.PointLight(0xe0e0e0, 1);
         pointLight.position.set(10, 10, 10);
         scene.add(pointLight);
-        const ambientLight = new THREE.AmbientLight(0x202020);
+        const ambientLight = new THREE.AmbientLight(isDarkTheme() ? 0x202020 : 0x606060);
         scene.add(ambientLight);
         const globeMesh = new THREE.Mesh(new THREE.SphereGeometry(1, 32, 32), new THREE.MeshStandardMaterial({ map: earthMap }));
         scene.add(globeMesh);
@@ -57,42 +118,16 @@ const Map: Component = () => {
         let previousDistance = 0;
         let previousZoomSpeed = 0;
 
-        const animate = () => {
-            requestAnimationFrame(animate);
-            //globeMesh.rotation.y -= 0.002;
-            // Calculate the distance from the camera to the target
-            const distance = camera.position.distanceTo(controls.target);
-            // if (distance != previousDistance) {
-            //     console.log(distance);
-            //     previousDistance = distance;
-            // }
-            // Calculate a factor for the zoom speed
-            const zoomSpeedFactor = (distance - controls.minDistance) / (2 - controls.minDistance);
-            // Set the zoom speed based on the factor, using a quadratic function
-            controls.zoomSpeed = Math.min(Math.max(0.001, zoomSpeedFactor), 5);
-            // Adjust the zoomSpeed based on the distance
-            //controls.zoomSpeed = THREE.MathUtils.lerp(0.1, 10, (distance - controls.minDistance) / (controls.maxDistance - controls.minDistance));
-            // if (controls.zoomSpeed != previousZoomSpeed) {
-            //     console.log("zoomSpeed", controls.zoomSpeed);
-            //     previousZoomSpeed = controls.zoomSpeed;
-            // }
-            //controls.zoomSpeed = 0.5;
-            // Calculate a factor for the pan speed
-            //const rotateSpeedFactor = (distance - controls.minDistance) / (2 - controls.minDistance);
-            // Set the pan speed based on the factor, using a linear function
-            controls.rotateSpeed = 0.27; // Math.min(Math.max(0.001, rotateSpeedFactor), 5);
-            controls.update();
-            renderer.render(scene, camera);
-        };
-        animate();
         setSceneState(scene);
         setCameraState(camera);
         setRendererState(renderer);
+        setControlsState(controls);
+        animate();
     };
 
     const createPin = (latitude: number, longitude: number) => {
-        //#ff3c00
-        const pinMaterial = new THREE.MeshBasicMaterial({ color: 0xff3c00 });
+        //#00f7ff
+        const pinMaterial = new THREE.MeshBasicMaterial({ color: 0x00f7ff });
         const pinGeometry = new THREE.SphereGeometry(0.01, 5, 5); //new THREE.CylinderGeometry(0.01, 0.01, 0.1, 32);
         const pin = new THREE.Mesh(pinGeometry, pinMaterial);
 

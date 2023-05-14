@@ -120,7 +120,7 @@ const Chat: Component<ChatProps> = () => {
                         onKeyDown={handleKeyDown}
                     />
                     <button class="absolute top-5 right-8" onClick={sendMessage}>
-                        <IoSend color={isDarkTheme() ? "#cccccc" : "#1e59b1"} size="22px" />
+                        <IoSend color={isDarkTheme() ? "#cccccc" : "#8d8c80"} size="22px" />
                     </button>
                 </div>
             </div>

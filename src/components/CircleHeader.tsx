@@ -1,30 +1,96 @@
-import { createMemo, For, Component } from "solid-js";
-import { FiArrowLeft } from "solid-icons/fi";
+import { createMemo, For, createSignal, Component, createEffect } from "solid-js";
+import { FiEdit, FiArrowLeft, FiCamera } from "solid-icons/fi";
 import { state, isMobile, circle } from "./CirclesData";
 import CirclePicture from "./CirclePicture";
-import { useCircleNode } from "./CircleNode";
 
 interface CircleHeaderProps {
-    onBack: () => void;
+    //onBack: () => void;
 }
 
-const CircleHeader: Component<CircleHeaderProps> = ({ onBack }) => {
-    // const { picture, name, activeMembers } = state.circle;
-    // const extraMembers = createMemo(() => activeMembers.length - 5);
+const CircleHeader: Component<CircleHeaderProps> = () => {
+    const onBack = () => {};
+
+    const [isAdmin] = createSignal(true); //  TODO CircleManager should check if user is admin
+
+    // Create signals to handle editing
+    const [isHoveringName, setHoveringName] = createSignal(false);
+    const [isHoveringPic, setHoveringPic] = createSignal(false);
+    const [isEditingName, setEditingName] = createSignal(false);
+    const [newName, setNewName] = createSignal("");
+
+    const handleNameChange = (e: any) => setNewName(e.target.value);
+
+    // Simulate saving to DB
+    const saveName = () => {
+        // Here you'd normally save newName() to your DB
+        console.log("Saving new name: ", newName());
+        setEditingName(false);
+    };
+
+    const handlePicChange = (e: any) => {
+        // Simulate saving new picture to DB
+        console.log("Saving new picture: ", URL.createObjectURL(e.target.files[0]));
+    };
+
+    const editNameClick = () => {
+        setEditingName(true);
+        setNewName(circle()?.name ?? "");
+    };
+
+    // Focus on the input field when editing
+    createEffect(() => {
+        if (isEditingName()) {
+            const input = document.getElementById("circle-name-input");
+            input?.focus();
+        }
+    });
+
+    const onKeyDown = (e: KeyboardEvent) => {
+        if (e.key === "Enter") {
+            saveName();
+        } else if (e.key === "Escape") {
+            setEditingName(false);
+        }
+    };
 
     return (
-        <div class="bg-heading py-3 px-6 flex items-center justify-start">
+        <div class="py-3 px-6 flex items-center justify-start absolute top-0 left-0">
             {isMobile() && (
                 <button onClick={onBack} class="mr-3">
                     <FiArrowLeft color="white" size="28px" />
                 </button>
             )}
-            <CirclePicture circle={circle()} size="40px" className="mr-3" />
-            <h2 class="text-white">{circle()?.name}</h2>
-            {/* <div class={styles.activeMembers}>
-                <For each={activeMembers.slice(0, 5)}>{(member) => <CirclePicture circle={member} size="20px" className={styles.memberBubble} />}</For>
-                {extraMembers() > 0 && <div class={styles.extraMembersBubble}>+{extraMembers()}</div>}
-            </div> */}
+            <div class="mr-3 relative" onMouseEnter={() => isAdmin() && setHoveringPic(true)} onMouseLeave={() => setHoveringPic(false)}>
+                <CirclePicture circle={circle()} size="40px" className="mr-3" />
+                {isHoveringPic() && isAdmin() && (
+                    <div class="absolute bottom-0 right-0 text-white">
+                        <label for="circle-pic-input">
+                            <FiCamera size="20px" class="cursor-pointer" />
+                        </label>
+                        <input id="circle-pic-input" type="file" accept="image/*" onChange={handlePicChange} class="hidden" />
+                    </div>
+                )}
+            </div>
+            <div class="relative flex items-center" onMouseEnter={() => isAdmin() && setHoveringName(true)} onMouseLeave={() => setHoveringName(false)}>
+                {isEditingName() ? (
+                    <div>
+                        <input
+                            id="circle-name-input"
+                            class="bg-transparent border-none outline-none font-bold text-2xl text-white"
+                            type="text"
+                            value={newName()}
+                            onInput={handleNameChange}
+                            onKeyDown={onKeyDown}
+                            onBlur={saveName}
+                        />
+                    </div>
+                ) : (
+                    <>
+                        <h1 class="text-white text-2xl font-bold">{circle()?.name}</h1>
+                        {isHoveringName() && isAdmin() && <FiEdit class="cursor-pointer ml-2" color="white" onClick={editNameClick} />}
+                    </>
+                )}
+            </div>
         </div>
     );
 };

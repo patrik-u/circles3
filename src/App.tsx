@@ -5,6 +5,7 @@ import { setIsMobile, isDarkTheme } from "./components/CirclesData";
 import CircleManager from "./components/CircleManager";
 import AuthManager from "./components/AuthManager";
 import LocationManager from "./components/LocationManager";
+import CircleHeader from "./components/CircleHeader";
 import CircleSelect from "./components/CircleSelect";
 import { useWindowDimensions } from "./components/useWindowDimensions";
 import Map from "./components/Map";
@@ -36,6 +37,7 @@ const App: Component = () => {
             <div class="w-full h-full">
                 <Map />
                 <WidgetController />
+                <CircleHeader />
                 {/* <CircleSelect />
                 <WidgetController />
                 <ProfileMenu /> */}

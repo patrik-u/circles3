@@ -1,5 +1,5 @@
-import { createSignal, createEffect, onCleanup } from "solid-js";
-import { gun, circlesRef, isLoggedIn, setIsLoggedIn, createCircleAlias, setUser } from "./CirclesData";
+import { createSignal, createEffect, onCleanup, Show } from "solid-js";
+import { gun, circlesRef, setUserCircle, isLoggedIn, setIsLoggedIn, createCircleAlias, setUser } from "./CirclesData";
 import { CgLogOut } from "solid-icons/cg";
 
 export const signOut = () => {
@@ -14,6 +14,7 @@ export default function AuthManager() {
     const userLocalStorageKey = "userCredentials";
     const [isAuthenticating, setIsAuthenticating] = createSignal(true);
     const [error, setError] = createSignal<string | null>(null);
+    const defaultCircleName = "home";
     let dialogRef: HTMLDialogElement;
 
     createEffect(() => {
@@ -54,7 +55,7 @@ export default function AuthManager() {
                 // Create a circle for the user if it doesn't exist
                 gunUser
                     .get("circles")
-                    .get(username)
+                    .get(defaultCircleName)
                     .once((data: any) => {
                         if (data) {
                             console.log("user circle already exists", JSON.stringify(data));
@@ -69,11 +70,22 @@ export default function AuthManager() {
                         };
                         gunUser
                             .get("circles")
+                            .get(defaultCircleName)
                             .put(circle)
                             .once((res) => {
                                 console.log("created user circle", JSON.stringify(res));
                             });
                     });
+
+                // Subscribe to user circle
+                gunUser
+                    .get("circles")
+                    .get(defaultCircleName)
+                    .on((data: any) => {
+                        console.log("user circle data", JSON.stringify(data));
+                        setUserCircle(data);
+                    });
+
                 console.log("user public key", gunUser.is?.pub);
 
                 setIsLoggedIn(true);
@@ -154,11 +166,11 @@ export default function AuthManager() {
                     {error() && <p class="text-red-500 mt-4">{error()}</p>}
                 </div>
             </dialog>
-            {isLoggedIn() && (
-                <button type="button" class="absolute bg- top-4 right-2 p-1 font-semibold rounded-md" style="background-color: #ebebeb;" onClick={signOut}>
-                    <CgLogOut size="24px" color="#666" />
+            <Show when={isLoggedIn()}>
+                <button type="button" class="absolute bottom-4 right-2 p-1 font-semibold rounded-md" onClick={signOut}>
+                    <CgLogOut size="24px" color="#888" />
                 </button>
-            )}
+            </Show>
         </>
     );
 }

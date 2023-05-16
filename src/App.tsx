@@ -10,10 +10,10 @@ import CircleSelect from "./components/CircleSelect";
 import { useWindowDimensions } from "./components/useWindowDimensions";
 import Map from "./components/Map";
 import WidgetController from "./components/WidgetController";
+import ProfileMenu from "./components/ProfileMenu";
 
 const App: Component = () => {
     const { windowWidth, windowHeight } = useWindowDimensions();
-    const navigate = useNavigate();
 
     createEffect(() => {
         let newIsMobile = windowWidth() < 768;
@@ -38,9 +38,10 @@ const App: Component = () => {
                 <Map />
                 <WidgetController />
                 <CircleHeader />
+                <ProfileMenu />
                 {/* <CircleSelect />
                 <WidgetController />
-                <ProfileMenu /> */}
+                 */}
 
                 <Routes>
                     <Route path="/" element={<Navigate href={`/${import.meta.env.VITE_DEFAULT_NODE}`} />} />

@@ -1,4 +1,4 @@
-import { createMemo, For, createSignal, Component, createEffect } from "solid-js";
+import { createMemo, For, createSignal, Component, createEffect, Show } from "solid-js";
 import { FiEdit, FiArrowLeft, FiCamera } from "solid-icons/fi";
 import { isMobile, circle, circleOwner, gun, user, circleRef, setCircle } from "./CirclesData";
 import CirclePicture from "./CirclePicture";
@@ -21,28 +21,18 @@ const CircleHeader: Component<CircleHeaderProps> = () => {
 
     const handleNameChange = (e: any) => setNewName(e.target.value);
 
-    // if circle alias is current username then show edit button
     createEffect(() => {
-        console.log("~" + user() + " === " + circleOwner());
         setIsAdmin("~" + user() === circleOwner());
     });
 
     const saveName = () => {
         setEditingName(false);
-
-        console.log("Saving new name: ", newName());
-        console.log("Circle ref: ", circleRef());
         setCircle((prev) => ({ ...prev, name: newName() }));
 
         if (circleRef()) {
             circleRef().get("name").put(newName());
         }
     };
-
-    // const handlePicChange = (e: any) => {
-    //     // Simulate saving new picture to DB
-    //     console.log("Saving new picture: ", URL.createObjectURL(e.target.files[0]));
-    // };
 
     const handlePicChange = (e: any) => {
         const file = e.target.files[0];
@@ -119,24 +109,32 @@ const CircleHeader: Component<CircleHeaderProps> = () => {
 
     return (
         <div class="py-3 px-6 flex items-center justify-start absolute top-0 left-0">
-            {isMobile() && (
+            <Show when={isMobile()}>
                 <button onClick={onBack} class="mr-3">
                     <FiArrowLeft color="white" size="28px" />
                 </button>
-            )}
+            </Show>
             <div class="mr-3 relative" onMouseEnter={() => isAdmin() && setHoveringPic(true)} onMouseLeave={() => setHoveringPic(false)}>
                 <CirclePicture circle={circle()} size="40px" className="mr-3" />
-                {isHoveringPic() && isAdmin() && (
+                <Show when={isHoveringPic() && isAdmin()}>
                     <div class="absolute bottom-0 right-0 text-white">
                         <label for="circle-pic-input">
                             <FiCamera size="20px" class="cursor-pointer" />
                         </label>
                         <input id="circle-pic-input" type="file" accept="image/*" onChange={handlePicChange} class="hidden" />
                     </div>
-                )}
+                </Show>
             </div>
             <div class="relative flex items-center" onMouseEnter={() => isAdmin() && setHoveringName(true)} onMouseLeave={() => setHoveringName(false)}>
-                {isEditingName() ? (
+                <Show
+                    when={isEditingName()}
+                    fallback={
+                        <>
+                            <h1 class="text-white text-2xl font-bold">{circleName()}</h1>
+                            {isHoveringName() && isAdmin() && <FiEdit class="cursor-pointer ml-2" color="white" onClick={editNameClick} />}
+                        </>
+                    }
+                >
                     <div>
                         <input
                             id="circle-name-input"
@@ -148,12 +146,7 @@ const CircleHeader: Component<CircleHeaderProps> = () => {
                             onBlur={saveName}
                         />
                     </div>
-                ) : (
-                    <>
-                        <h1 class="text-white text-2xl font-bold">{circleName()}</h1>
-                        {isHoveringName() && isAdmin() && <FiEdit class="cursor-pointer ml-2" color="white" onClick={editNameClick} />}
-                    </>
-                )}
+                </Show>
             </div>
         </div>
     );

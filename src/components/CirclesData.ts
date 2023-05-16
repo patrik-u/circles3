@@ -128,4 +128,8 @@ export { circleOwner, setCircleOwner };
 const [user, setUser] = createSignal<string | null>(null);
 export { user, setUser };
 
+// circle of the logged in user
+const [userCircle, setUserCircle] = createSignal<Circle | null>(null);
+export { userCircle, setUserCircle };
+
 //#endregion

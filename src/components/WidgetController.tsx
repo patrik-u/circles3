@@ -21,13 +21,14 @@ import Map from "./Map";
 import CirclePicture from "./CirclePicture";
 import { FiArrowLeft } from "solid-icons/fi";
 import { FaSolidSun, FaSolidMoon } from "solid-icons/fa";
+import Video from "./Video";
 
 interface CircleComponentProps {}
 
 // Responsible for showing widgets such as Chat, Calendar, Video, Map, etc.
 const WidgetController: Component<CircleComponentProps> = () => {
     const [toggledWidgets, setToggledWidgets] = createSignal(["chat"]);
-    const menuItems = ["about", "chat", "video", "calendar", "map"];
+    const menuItems = ["about", "chat", "video", "calendar"];
 
     const toggleWidget = (component: string) => {
         if (isMobile()) {
@@ -70,8 +71,8 @@ const WidgetController: Component<CircleComponentProps> = () => {
 
     return (
         <div class="flex flex-col h-screen w-screen z-1 absolute pointer-events-none">
-            <div class="p-5 absolute w-screen pointer-events-auto">
-                <div class="flex justify-center" style="margin-left: 5px;">
+            <div class={`p-5 absolute w-screen pointer-events-auto`}>
+                <div class="flex justify-center" style={`margin-left: 5px; margin-top: ${isMobile() ? "50px" : ""}`}>
                     {menuItems.map((component) => (
                         <button
                             class={`mr-2 px-6 py-1 text-black dark:text-gray-200 hover:bg-navbuttonHover dark:hover:bg-navbuttonHoverDark transition-colors duration-200 rounded focus:outline-none navbutton navbutton${
@@ -100,13 +101,12 @@ const WidgetController: Component<CircleComponentProps> = () => {
                         <Chat />
                     </div>
                 )}
-                {toggledWidgets().includes("video") && <div class={getWidgetClass("video")}>Video</div>}
-                {toggledWidgets().includes("calendar") && <div class={getWidgetClass("calendar")}>Calendar</div>}
-                {/* {toggledWidgets().includes("map") && (
-                    <div class={getWidgetClass("map")}>
-                        <Map />
+                {toggledWidgets().includes("video") && (
+                    <div class={getWidgetClass("video")}>
+                        <Video />
                     </div>
-                )} */}
+                )}
+                {toggledWidgets().includes("calendar") && <div class={getWidgetClass("calendar")}>Calendar</div>}
             </div>
         </div>
     );

@@ -14,6 +14,7 @@ const CirclePicture: Component<CirclePictureProps> = (props) => {
     };
 
     const handleImageError = (event: Event) => {
+        console.log("Error loading image", JSON.stringify(event));
         // Replace the src attribute with the URL of your default image
         const imgElement = event.target as HTMLImageElement;
         imgElement.src = "./images/default-circle-picture.png";
@@ -21,7 +22,7 @@ const CirclePicture: Component<CirclePictureProps> = (props) => {
 
     return (
         <img
-            src={props.circle?.picture ?? "./images/default-circle-picture.png"}
+            src={props.circle?.pictureRaw ?? props.circle?.picture ?? "./images/default-circle-picture.png"}
             alt="Circle Picture"
             style={dynamicStyle}
             class={`rounded-full object-cover  ${props.className}`}

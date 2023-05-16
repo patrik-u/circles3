@@ -41,15 +41,15 @@ export default function AuthManager() {
         const authCallback = (ack: any) => {
             if (ack.err) {
                 console.error("Authentication error:", ack.err);
-                setUser(null);
             } else {
                 // Load user data
                 if (!gunUser.is) {
                     console.error("Authentication error");
+                    setUser(null);
                     return;
                 }
 
-                setUser({ username, pubKey: gunUser.is.pub });
+                setUser(gunUser.is.pub);
 
                 // Create a circle for the user if it doesn't exist
                 gunUser
@@ -57,6 +57,7 @@ export default function AuthManager() {
                     .get(username)
                     .once((data: any) => {
                         if (data) {
+                            console.log("user circle already exists", JSON.stringify(data));
                             return;
                         }
 
@@ -66,20 +67,12 @@ export default function AuthManager() {
                             alias: username,
                             type: "user",
                         };
-                        gunUser.get("circles").put(circle, (obj) => {
-                            console.log("created user circle", JSON.stringify(obj));
-                            console.log(circle, JSON.stringify(circle));
-
-                            // create a default alias for the circle
-                            gunUser
-                                .get("circles")
-                                .get(circle.alias)
-                                .put(circle, (res) => {
-                                    console.log("created alias for user circle", JSON.stringify(res));
-                                });
-
-                            // add the circle to the list of user favorites along with the "all" circle
-                        });
+                        gunUser
+                            .get("circles")
+                            .put(circle)
+                            .once((res) => {
+                                console.log("created user circle", JSON.stringify(res));
+                            });
                     });
                 console.log("user public key", gunUser.is?.pub);
 

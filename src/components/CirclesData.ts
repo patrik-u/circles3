@@ -72,19 +72,16 @@ export const createCircleAlias = async (circle: Circle) => {
 
 //#region Types
 
-export interface User {
-    username: string;
-    pubKey: string;
-}
-
 export interface Circle {
     name: string;
     alias?: string;
     picture?: string;
+    pictureRaw?: string;
     description?: string;
     content?: string;
     location?: Location;
     type: string;
+    admins?: string[];
     _?: any;
 }
 
@@ -112,7 +109,7 @@ export { isMobile, setIsMobile };
 const [circle, setCircle] = createSignal<Circle | null>(null);
 export { circle, setCircle };
 
-const [circleRef, setCircleRef] = createSignal<Circle | null>(null);
+const [circleRef, setCircleRef] = createSignal<any | null>(null);
 export { circleRef, setCircleRef };
 
 const [circles, setCircles] = createSignal<any | null>(null);
@@ -125,10 +122,10 @@ const [isDarkTheme, setIsDarkTheme] = createStoredSignal<boolean | undefined>("i
 export { isDarkTheme, setIsDarkTheme };
 
 // owner of the current circle we are viewing
-const [userSpace, setUserSpace] = createSignal<User | null>();
-export { userSpace, setUserSpace };
+const [circleOwner, setCircleOwner] = createSignal<string | null>(null);
+export { circleOwner, setCircleOwner };
 
-const [user, setUser] = createSignal<User | null>();
+const [user, setUser] = createSignal<string | null>(null);
 export { user, setUser };
 
 //#endregion

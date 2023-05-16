@@ -43,7 +43,7 @@ const App: Component = () => {
                 <ProfileMenu /> */}
 
                 <Routes>
-                    <Route path="/" element={<Navigate href="/all" />} />
+                    <Route path="/" element={<Navigate href={`/${import.meta.env.VITE_DEFAULT_NODE}`} />} />
                     <Route path="/*" element={<CircleManager />} />
                 </Routes>
             </div>

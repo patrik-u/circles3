@@ -1,6 +1,6 @@
 import { createMemo, For, createSignal, Component, createEffect } from "solid-js";
 import { FiEdit, FiArrowLeft, FiCamera } from "solid-icons/fi";
-import { isMobile, circle, user, userSpace, gun } from "./CirclesData";
+import { isMobile, circle, circleOwner, gun, user, circleRef, setCircle } from "./CirclesData";
 import CirclePicture from "./CirclePicture";
 
 interface CircleHeaderProps {
@@ -17,34 +17,78 @@ const CircleHeader: Component<CircleHeaderProps> = () => {
     const [isHoveringPic, setHoveringPic] = createSignal(false);
     const [isEditingName, setEditingName] = createSignal(false);
     const [newName, setNewName] = createSignal("");
+    const [circleName, setCircleName] = createSignal("");
 
     const handleNameChange = (e: any) => setNewName(e.target.value);
 
     // if circle alias is current username then show edit button
     createEffect(() => {
-        let us = userSpace();
-        let u = user();
-        if (!u || !us) {
-            setIsAdmin(false);
-        } else {
-            setIsAdmin(us.username === u.username);
-        }
+        console.log("~" + user() + " === " + circleOwner());
+        setIsAdmin("~" + user() === circleOwner());
     });
 
     const saveName = () => {
         setEditingName(false);
 
-        // save new name to circle node
-        // let c = circle();
-        // if (c) {
-        //     c.name = newName();
-        //     gun().get(c.id).put(c);
-        // }
+        console.log("Saving new name: ", newName());
+        console.log("Circle ref: ", circleRef());
+        setCircle((prev) => ({ ...prev, name: newName() }));
+
+        if (circleRef()) {
+            circleRef().get("name").put(newName());
+        }
     };
 
+    // const handlePicChange = (e: any) => {
+    //     // Simulate saving new picture to DB
+    //     console.log("Saving new picture: ", URL.createObjectURL(e.target.files[0]));
+    // };
+
     const handlePicChange = (e: any) => {
-        // Simulate saving new picture to DB
-        console.log("Saving new picture: ", URL.createObjectURL(e.target.files[0]));
+        const file = e.target.files[0];
+        if (!file) {
+            return;
+        }
+        const reader = new FileReader();
+        reader.onload = function (e) {
+            const img = new Image();
+            img.onload = () => {
+                const maxSize = 1000; // Define the max size here
+                let width = img.width;
+                let height = img.height;
+
+                if (width > height) {
+                    if (width > maxSize) {
+                        height *= maxSize / width;
+                        width = maxSize;
+                    }
+                } else {
+                    if (height > maxSize) {
+                        width *= maxSize / height;
+                        height = maxSize;
+                    }
+                }
+
+                const canvas = document.createElement("canvas");
+                canvas.width = width;
+                canvas.height = height;
+
+                const ctx = canvas.getContext("2d");
+                ctx.drawImage(img, 0, 0, width, height);
+
+                const newImg = canvas.toDataURL("image/png");
+
+                console.log("Saving new picture: ", newImg);
+
+                setCircle((prev) => ({ ...prev, pictureRaw: newImg }));
+
+                if (circleRef()) {
+                    circleRef().get("pictureRaw").put(newImg);
+                }
+            };
+            img.src = e.target.result as string;
+        };
+        reader.readAsDataURL(file);
     };
 
     const editNameClick = () => {
@@ -58,6 +102,11 @@ const CircleHeader: Component<CircleHeaderProps> = () => {
             const input = document.getElementById("circle-name-input");
             input?.focus();
         }
+    });
+
+    createEffect(() => {
+        console.log("Setting circle name: ", circle()?.name ?? "");
+        setCircleName(circle()?.name ?? "");
     });
 
     const onKeyDown = (e: KeyboardEvent) => {
@@ -101,7 +150,7 @@ const CircleHeader: Component<CircleHeaderProps> = () => {
                     </div>
                 ) : (
                     <>
-                        <h1 class="text-white text-2xl font-bold">{circle()?.name}</h1>
+                        <h1 class="text-white text-2xl font-bold">{circleName()}</h1>
                         {isHoveringName() && isAdmin() && <FiEdit class="cursor-pointer ml-2" color="white" onClick={editNameClick} />}
                     </>
                 )}

@@ -1,6 +1,6 @@
 import { createEffect, onCleanup } from "solid-js";
 import { getPreciseDistance } from "geolib";
-import { state, setUserLocation } from "./CirclesData";
+import { userLocation, setUserLocation } from "./CirclesData";
 
 export const LocationManager = () => {
     const getUserLocationSuccess = (location: GeolocationPosition) => {
@@ -9,8 +9,9 @@ export const LocationManager = () => {
             longitude: location.coords.longitude,
         };
 
-        if (state.userLocation?.latitude && state.userLocation?.longitude) {
-            const preciseDistance = getPreciseDistance(state.userLocation, newUserLocation);
+        let uloc = userLocation();
+        if (uloc?.latitude && uloc?.longitude) {
+            const preciseDistance = getPreciseDistance(uloc, newUserLocation);
             console.log(
                 `getUserLocationSuccess (diff: ${preciseDistance}, lat: ${location.coords.latitude}, lon: ${location.coords.longitude}, acc: ${location.coords.accuracy})`,
                 0

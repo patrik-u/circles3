@@ -1,5 +1,5 @@
 import { createEffect, createSignal, onCleanup, For, Component } from "solid-js";
-import { gun, indexRef, circles, setCircles, circlesRef, state, setUserRef, setIsLoggedIn, Circle, isDarkTheme, isMobile } from "./CirclesData";
+import { gun, indexRef, circles, setCircles, circlesRef, userLocation, setIsLoggedIn, Circle, isDarkTheme, isMobile } from "./CirclesData";
 import Geohash from "latlon-geohash";
 import Map from "./Map";
 import { IoSend } from "solid-icons/io";
@@ -30,9 +30,10 @@ const Chat: Component<ChatProps> = () => {
 
         // Get user coordinates
         let geohashKeys: any[] = [];
-        if (state.userLocation) {
-            const latitude = state.userLocation.latitude;
-            const longitude = state.userLocation.longitude;
+        let location = userLocation();
+        if (location) {
+            const latitude = location.latitude;
+            const longitude = location.longitude;
 
             // TODO generate random coordinates for testing
             // const longitude = Math.random() * 360 - 180;
@@ -50,7 +51,8 @@ const Chat: Component<ChatProps> = () => {
         }
 
         // Save the message under user node with a unique key
-        const messageRef = state.userRef.get("messages").set(newMessage);
+
+        //const messageRef = state.userRef.get("messages").set(newMessage);
         // TODO we want to save the message under user node not userRef right?
         // userRef is reference to user circle
 
@@ -113,7 +115,7 @@ const Chat: Component<ChatProps> = () => {
             <div class="p-3 mt-auto w-full relative pointer-events-auto">
                 <div class="bg-inputBox dark:bg-inputBoxDark shadow-lg rounded-3xl overflow-hidden">
                     <textarea
-                        class="w-full resize-none bg-inputBox dark:bg-inputBoxDark text-white"
+                        class="w-full resize-none bg-inputBox dark:bg-inputBoxDark text-black dark:text-white"
                         style="height: 35px; padding-left: 15px; padding-top: 7px;"
                         value={message()}
                         onInput={(e) => setMessage((e.target as HTMLTextAreaElement).value)}

@@ -1,44 +1,75 @@
 import { createEffect, onCleanup, Component } from "solid-js";
 import { useParams, useLocation } from "@solidjs/router";
-import { setCircle, circles, setCircles, indexRef, circlesRef, Circle as CircleType } from "./CirclesData";
+import { rootRef, gun, setCircle, isLoggedIn, setUserSpace, circles, Circle, setCircles, indexRef, circlesRef, Circle as CircleType } from "./CirclesData";
+import SEA from "gun/sea";
 
 interface CircleComponentProps {}
 
 // Responsible for loading and managing circle data
 const CircleManager: Component<CircleComponentProps> = () => {
-    const params = useParams();
     const location = useLocation();
 
     // load circle from GunDB
     createEffect(() => {
-        let circleId = location.pathname?.substring(1);
-        if (!circleId) return;
+        // let nodeRoute = location.pathname?.substring(1);
+        // if (!nodeRoute) return;
 
-        console.log("Opening circle with ID", circleId);
-        let circleRef = circlesRef.get(circleId);
+        // hash of all participants + purpose? that way we don't need to store them in the database
+        // problem is that it becomes less flexible as people join/leave
 
-        // subscribing to circle data
-        circleRef.on((circleData, key) => {
-            console.log("circleRef.on()", JSON.stringify(circleData));
-        });
+        // gun.get(nodeRoute).once((circleData) => {
+        //     if (!circleData) {
+        //         console.error("Circle not found");
+        //         return;
+        //     } else {
+        //         console.log("Loading circle", JSON.stringify(circleData, null, 2));
+        //         setCircle(circleData as Circle);
+        //     }
+        // });
 
-        // load circle data
-        circleRef.once((circleData) => {
-            if (!circleData) {
-                const newCircle = createNewCircle(circleId, "circle");
-                circleRef.put(newCircle, () => {
-                    console.log(`Circle with ID "${circleId}" created.`);
-                });
-                setCircle(circleData);
-            } else {
-                console.log("Loading circle", JSON.stringify(circleData, null, 2));
-                setCircle(circleData);
+        let nodeRoute = location.pathname?.substring(1);
+        if (!nodeRoute) return;
+
+        //gun.get('#rooms').get(roomId).get('members').get(username).put(true);
+
+        console.log("Opening node route", nodeRoute);
+
+        // split circleId into username and circle ID/alias
+        let routes = nodeRoute.split("/");
+        let username = routes[0];
+        let circleId = routes[1];
+        if (!username) {
+            setCircle(null);
+            setUserSpace(null);
+            return;
+        }
+
+        if (!circleId) {
+            circleId = username; // default circle
+        }
+
+        gun.get(`~@${username}`).once((user, key) => {
+            if (!user) {
+                console.log(`Circle not found: no user found for username ${username}`);
+                setCircle(null);
+                setUserSpace(null);
+                return;
             }
+            let userPubKey = Object.keys(user).find((x) => x.startsWith("~")) ?? "";
+            setUserSpace({ username, pubKey: userPubKey });
+            gun.get(userPubKey as any)
+                .get("circles" as any)
+                .get(circleId as any)
+                .once((circleData) => {
+                    if (!circleData) {
+                        console.error("Circle not found");
+                        return;
+                    } else {
+                        console.log("Loading circle", JSON.stringify(circleData, null, 2));
+                        setCircle(circleData as Circle);
+                    }
+                });
         });
-
-        return () => {
-            circleRef.off();
-        };
     });
 
     // Filter options for circles

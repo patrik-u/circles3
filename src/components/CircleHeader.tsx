@@ -1,6 +1,6 @@
 import { createMemo, For, createSignal, Component, createEffect } from "solid-js";
 import { FiEdit, FiArrowLeft, FiCamera } from "solid-icons/fi";
-import { state, isMobile, circle } from "./CirclesData";
+import { isMobile, circle, user, userSpace, gun } from "./CirclesData";
 import CirclePicture from "./CirclePicture";
 
 interface CircleHeaderProps {
@@ -10,7 +10,7 @@ interface CircleHeaderProps {
 const CircleHeader: Component<CircleHeaderProps> = () => {
     const onBack = () => {};
 
-    const [isAdmin] = createSignal(true); //  TODO CircleManager should check if user is admin
+    const [isAdmin, setIsAdmin] = createSignal(false); //  TODO CircleManager should check if user is admin
 
     // Create signals to handle editing
     const [isHoveringName, setHoveringName] = createSignal(false);
@@ -20,11 +20,26 @@ const CircleHeader: Component<CircleHeaderProps> = () => {
 
     const handleNameChange = (e: any) => setNewName(e.target.value);
 
-    // Simulate saving to DB
+    // if circle alias is current username then show edit button
+    createEffect(() => {
+        let us = userSpace();
+        let u = user();
+        if (!u || !us) {
+            setIsAdmin(false);
+        } else {
+            setIsAdmin(us.username === u.username);
+        }
+    });
+
     const saveName = () => {
-        // Here you'd normally save newName() to your DB
-        console.log("Saving new name: ", newName());
         setEditingName(false);
+
+        // save new name to circle node
+        // let c = circle();
+        // if (c) {
+        //     c.name = newName();
+        //     gun().get(c.id).put(c);
+        // }
     };
 
     const handlePicChange = (e: any) => {

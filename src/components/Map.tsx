@@ -181,7 +181,7 @@ const Map: Component = () => {
         let circlesAr = circles() ? Object.values(circles()) : [];
         if (!scene || !camera || !renderer || !circlesAr) return;
 
-        console.log("updating pins", circlesAr?.length);
+        // console.log("updating pins", circlesAr?.length); // TODO this is called a lot
 
         // Remove all existing pins before creating new ones
         scene.children.filter((child) => child.userData.pin).forEach((child) => scene?.remove(child));

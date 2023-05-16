@@ -1,7 +1,7 @@
 import { createSignal, Signal } from "solid-js";
 import { createStore } from "solid-js/store";
 import Gun from "gun";
-import "gun/sea";
+import SEA from "gun/sea";
 
 // Global Gun instance
 export const gun = Gun("https://gun-manhattan.herokuapp.com/gun");
@@ -18,76 +18,9 @@ export const circlesRef = rootRef.get<any>("circles" as any);
 // Messages node
 export const nodesRef = rootRef.get<any>("nodes" as any);
 
-//#region Types
+//#region Helpers
 
-export interface Circle {
-    name: string;
-    picture?: string;
-    description?: string;
-    content?: string;
-    location?: Location;
-    type: string;
-}
-
-export interface Message extends Circle {}
-
-export interface Location {
-    latitude: number;
-    longitude: number;
-    geohash?: string;
-}
-
-//#endregion
-
-//#region Global state
-
-interface GlobalState {
-    circleRef: any;
-    userRef: any;
-    isLoggedIn: boolean;
-    userLocation?: Location;
-}
-
-const [state, setState] = createStore<GlobalState>({
-    circleRef: null,
-    userRef: null,
-    isLoggedIn: false,
-    userLocation: undefined,
-});
-export { state, setState };
-
-const [isMobile, setIsMobile] = createSignal<boolean>(false);
-export { isMobile, setIsMobile };
-
-const [circle, setCircle] = createSignal<Circle | null>(null);
-export { circle, setCircle };
-
-const [circles, setCircles] = createSignal<any | null>(null);
-export { circles, setCircles };
-
-const [toggleResize, setToggleResize] = createSignal<boolean>(false);
-export { toggleResize, setToggleResize };
-
-// Global state setters
-export const setCircleRef = (circleRef: any) => {
-    setState("circleRef", circleRef);
-};
-
-export const setUserRef = (userRef: any) => {
-    setState("userRef", userRef);
-};
-
-export const setIsLoggedIn = (isLoggedIn: boolean) => {
-    setState("isLoggedIn", isLoggedIn);
-};
-
-export const setUserLocation = (location: any) => {
-    setState("userLocation", location);
-    if (state.userRef) {
-        state.userRef.get("location").put(location);
-    }
-};
-
+// Creates a signal that stores its value in localStorage
 export const createStoredSignal = <T>(key: string, defaultValue: T, storage = localStorage): Signal<T> => {
     const storedValue = storage.getItem(key);
     const initialValue = storedValue !== null ? (JSON.parse(storedValue) as T) : defaultValue;
@@ -112,7 +45,90 @@ export const createStoredSignal = <T>(key: string, defaultValue: T, storage = lo
     return [value, setValueAndStore];
 };
 
+// Creates an alias for the circle
+export const createCircleAlias = async (circle: Circle) => {
+    console.log("alias", circle.alias);
+    console.log("soul", circle._?.["#"]);
+    if (!circle.alias || !circle._) return;
+
+    let soul = circle._["#"]; // get soul of the circle node
+    let alias = circle.alias;
+    let hash = await SEA.work(alias, null, null, { name: "SHA-256" }); // hash the alias
+
+    //let soulHash = await SEA.work(soul, null, null, { name: "SHA-256" }); // hash the soul
+
+    //gun.get("#").get(hash).put(soul);
+
+    // rootRef
+    //     .get("#aliases")
+    //     .get(hash as any)
+    //     .put(alias);
+
+    // .get(soulHash as any)
+    // .put({ soul: soul });
+};
+
+//#endregion
+
+//#region Types
+
+export interface User {
+    username: string;
+    pubKey: string;
+}
+
+export interface Circle {
+    name: string;
+    alias?: string;
+    picture?: string;
+    description?: string;
+    content?: string;
+    location?: Location;
+    type: string;
+    _?: any;
+}
+
+export interface Message extends Circle {}
+
+export interface Location {
+    latitude: number;
+    longitude: number;
+    geohash?: string;
+}
+
+//#endregion
+
+//#region Global state
+
+const [isLoggedIn, setIsLoggedIn] = createSignal<boolean>(false);
+export { isLoggedIn, setIsLoggedIn };
+
+const [userLocation, setUserLocation] = createSignal<Location | null>(null);
+export { userLocation, setUserLocation };
+
+const [isMobile, setIsMobile] = createSignal<boolean>(false);
+export { isMobile, setIsMobile };
+
+const [circle, setCircle] = createSignal<Circle | null>(null);
+export { circle, setCircle };
+
+const [circleRef, setCircleRef] = createSignal<Circle | null>(null);
+export { circleRef, setCircleRef };
+
+const [circles, setCircles] = createSignal<any | null>(null);
+export { circles, setCircles };
+
+const [toggleResize, setToggleResize] = createSignal<boolean>(false);
+export { toggleResize, setToggleResize };
+
 const [isDarkTheme, setIsDarkTheme] = createStoredSignal<boolean | undefined>("isDarkTheme", true);
 export { isDarkTheme, setIsDarkTheme };
+
+// owner of the current circle we are viewing
+const [userSpace, setUserSpace] = createSignal<User | null>();
+export { userSpace, setUserSpace };
+
+const [user, setUser] = createSignal<User | null>();
+export { user, setUser };
 
 //#endregion

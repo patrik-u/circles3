@@ -1,12 +1,11 @@
 import { createSignal, createEffect, onCleanup } from "solid-js";
-import { gun, circlesRef, state, setUserRef, setIsLoggedIn } from "./CirclesData";
+import { gun, circlesRef, isLoggedIn, setIsLoggedIn, createCircleAlias, setUser } from "./CirclesData";
 import { CgLogOut } from "solid-icons/cg";
 
 export const signOut = () => {
     gun.user().leave();
     localStorage.removeItem("userCredentials");
     setIsLoggedIn(false);
-    setUserRef(null);
 };
 
 export default function AuthManager() {
@@ -14,6 +13,7 @@ export default function AuthManager() {
     const [passwordInput, setPasswordInput] = createSignal("");
     const userLocalStorageKey = "userCredentials";
     const [isAuthenticating, setIsAuthenticating] = createSignal(true);
+    const [error, setError] = createSignal<string | null>(null);
     let dialogRef: HTMLDialogElement;
 
     createEffect(() => {
@@ -29,49 +29,59 @@ export default function AuthManager() {
     });
 
     createEffect(() => {
-        if (dialogRef && !state.isLoggedIn && !isAuthenticating()) {
+        if (dialogRef && !isLoggedIn() && !isAuthenticating()) {
             console.log("showing dialog");
             dialogRef.showModal();
         }
     });
 
-    const createUserCircle = (userId: string) => {
-        const name = `Anonymous`;
-        const userRef = state.userRef;
-        userRef.put({ name }, (ack: any) => {
-            if (ack.err) {
-                console.error("Failed to create user circle:", ack.err);
-            } else {
-                console.log("User circle created:", userId);
-            }
-        });
-    };
-
     const signIn = (username: string, password: string) => {
-        const user = gun.user();
+        const gunUser = gun.user();
 
         const authCallback = (ack: any) => {
             if (ack.err) {
                 console.error("Authentication error:", ack.err);
+                setUser(null);
             } else {
                 // Load user data
-                if (!user.is) {
+                if (!gunUser.is) {
                     console.error("Authentication error");
                     return;
                 }
-                let userId = user.is.pub;
-                const userRef = circlesRef.get(userId as any);
-                setUserRef(userRef);
 
-                // Check if the user has a circle
-                userRef.once((data: any) => {
-                    if (!data) {
-                        // New user - create a circle for them
-                        createUserCircle(userId);
-                    }
-                });
+                setUser({ username, pubKey: gunUser.is.pub });
 
-                console.log("log user public key", user.is?.pub);
+                // Create a circle for the user if it doesn't exist
+                gunUser
+                    .get("circles")
+                    .get(username)
+                    .once((data: any) => {
+                        if (data) {
+                            return;
+                        }
+
+                        // Create a circle for the user
+                        let circle = {
+                            name: username,
+                            alias: username,
+                            type: "user",
+                        };
+                        gunUser.get("circles").put(circle, (obj) => {
+                            console.log("created user circle", JSON.stringify(obj));
+                            console.log(circle, JSON.stringify(circle));
+
+                            // create a default alias for the circle
+                            gunUser
+                                .get("circles")
+                                .get(circle.alias)
+                                .put(circle, (res) => {
+                                    console.log("created alias for user circle", JSON.stringify(res));
+                                });
+
+                            // add the circle to the list of user favorites along with the "all" circle
+                        });
+                    });
+                console.log("user public key", gunUser.is?.pub);
 
                 setIsLoggedIn(true);
                 localStorage.setItem(userLocalStorageKey, JSON.stringify({ username, password }));
@@ -80,17 +90,24 @@ export default function AuthManager() {
             setIsAuthenticating(false);
         };
 
-        user.auth(username, password, authCallback);
+        gunUser.auth(username, password, authCallback);
     };
 
     const signUp = (username: string, password: string) => {
-        const user = gun.user();
+        const gunUser = gun.user();
 
-        user.create(username, password, (ack: any) => {
-            if (ack.err) {
-                console.error("User creation error:", ack.err);
+        gun.get(`~@${username}`).once((data: any) => {
+            if (data) {
+                setError("User already exists");
+                return;
             } else {
-                signIn(username, password);
+                gunUser.create(username, password, (ack: any) => {
+                    if (ack.err) {
+                        setError(ack.err);
+                    } else {
+                        signIn(username, password);
+                    }
+                });
             }
         });
     };
@@ -141,9 +158,10 @@ export default function AuthManager() {
                     <button type="button" class="bg-blue-500 text-white font-semibold px-6 py-2 rounded-md hover:bg-blue-600 ml-4" onClick={signUpClick}>
                         Sign up
                     </button>
+                    {error() && <p class="text-red-500 mt-4">{error()}</p>}
                 </div>
             </dialog>
-            {state.isLoggedIn && (
+            {isLoggedIn() && (
                 <button type="button" class="absolute bg- top-4 right-2 p-1 font-semibold rounded-md" style="background-color: #ebebeb;" onClick={signOut}>
                     <CgLogOut size="24px" color="#666" />
                 </button>

@@ -15,6 +15,8 @@ import {
     setToggleResize,
     isDarkTheme,
     setIsDarkTheme,
+    toggleWidgetAction,
+    setToggleWidgetAction,
 } from "./CirclesData";
 import Chat from "./Chat";
 import Map from "./Map";
@@ -27,22 +29,30 @@ interface CircleComponentProps {}
 
 // Responsible for showing widgets such as Chat, Calendar, Video, Map, etc.
 const WidgetController: Component<CircleComponentProps> = () => {
-    const [toggledWidgets, setToggledWidgets] = createSignal(["chat"]);
-    const menuItems = ["about", "chat", "video", "calendar"];
+    const [toggledWidgets, setToggledWidgets] = createSignal(["feed"]);
+    const menuItems = ["about", "feed", "video", "calendar"];
 
-    const toggleWidget = (component: string) => {
+    const toggleWidget = (component: string, toggleOn: boolean | undefined = undefined) => {
         if (isMobile()) {
             if (toggledWidgets().includes(component)) {
-                setToggledWidgets([]);
+                if (toggleOn === undefined || toggleOn === false) {
+                    setToggledWidgets([]);
+                }
             } else {
-                setToggledWidgets([component]);
+                if (toggleOn === undefined || toggleOn === true) {
+                    setToggledWidgets([component]);
+                }
             }
         } else {
             if (toggledWidgets().includes(component)) {
-                setToggledWidgets(toggledWidgets().filter((item) => item !== component));
+                if (toggleOn === undefined || toggleOn === false) {
+                    setToggledWidgets(toggledWidgets().filter((item) => item !== component));
+                }
             } else {
-                if (toggledWidgets().length < 3) {
-                    setToggledWidgets([...toggledWidgets(), component]);
+                if (toggleOn === undefined || toggleOn === true) {
+                    if (toggledWidgets().length < 3) {
+                        setToggledWidgets([...toggledWidgets(), component]);
+                    }
                 }
             }
             setToggleResize(true);
@@ -54,7 +64,7 @@ const WidgetController: Component<CircleComponentProps> = () => {
         let fixedSize = false;
         if (!isMobile()) {
             fixedSize = (toggledWidgets()[0] === component || toggledWidgets()[2] === component) && toggledWidgets().length !== 1;
-            if (component === "chat") {
+            if (component === "feed") {
                 fixedSize = true;
             }
         }
@@ -64,6 +74,15 @@ const WidgetController: Component<CircleComponentProps> = () => {
     const toggleTheme = () => {
         setIsDarkTheme(!isDarkTheme());
     };
+
+    createEffect(() => {
+        let action = toggleWidgetAction();
+        if (!action) {
+            return;
+        }
+        toggleWidget(action.widget, action.toggleOn);
+        setToggleWidgetAction(null);
+    });
 
     // bg: #262626
     // color: white
@@ -95,9 +114,9 @@ const WidgetController: Component<CircleComponentProps> = () => {
             </div>
 
             <div class="flex flex-grow">
-                {toggledWidgets().includes("about") && <div class={getWidgetClass("about")}>About</div>}
-                {toggledWidgets().includes("chat") && (
-                    <div class={getWidgetClass("chat")}>
+                {toggledWidgets().includes("about") && <div class={getWidgetClass("about")}></div>}
+                {toggledWidgets().includes("feed") && (
+                    <div class={getWidgetClass("feed")}>
                         <Chat />
                     </div>
                 )}
@@ -106,7 +125,7 @@ const WidgetController: Component<CircleComponentProps> = () => {
                         <Video />
                     </div>
                 )}
-                {toggledWidgets().includes("calendar") && <div class={getWidgetClass("calendar")}>Calendar</div>}
+                {toggledWidgets().includes("calendar") && <div class={getWidgetClass("calendar")}></div>}
             </div>
         </div>
     );

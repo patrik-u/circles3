@@ -93,6 +93,11 @@ export interface Location {
     geohash?: string;
 }
 
+export interface ToggleWidgetAction {
+    widget: string;
+    toggleOn: boolean;
+}
+
 //#endregion
 
 //#region Global state
@@ -131,5 +136,8 @@ export { user, setUser };
 // circle of the logged in user
 const [userCircle, setUserCircle] = createSignal<Circle | null>(null);
 export { userCircle, setUserCircle };
+
+const [toggleWidgetAction, setToggleWidgetAction] = createSignal<ToggleWidgetAction | null>(null);
+export { toggleWidgetAction, setToggleWidgetAction };
 
 //#endregion

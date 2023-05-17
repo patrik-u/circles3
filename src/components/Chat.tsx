@@ -1,13 +1,15 @@
-import { createEffect, createSignal, onCleanup, For, Component } from "solid-js";
-import { gun, indexRef, circles, setCircles, circlesRef, userLocation, setIsLoggedIn, Circle, isDarkTheme, isMobile } from "./CirclesData";
+import { createEffect, createSignal, onCleanup, For, Component, Show } from "solid-js";
+import { gun, indexRef, circles, setCircles, circlesRef, userLocation, setIsLoggedIn, Circle, isDarkTheme, isMobile, userCircle } from "./CirclesData";
 import Geohash from "latlon-geohash";
 import Map from "./Map";
 import { IoSend } from "solid-icons/io";
+import CirclePicture from "./CirclePicture";
 
 interface ChatProps {}
 
 const Chat: Component<ChatProps> = () => {
     const [message, setMessage] = createSignal("");
+    const [messages, setMessages] = createSignal<any[]>([]);
 
     const sendMessage = () => {
         if (message().trim() === "") return;
@@ -46,11 +48,13 @@ const Chat: Component<ChatProps> = () => {
             newMessage.latitude = latitude;
             newMessage.longitude = longitude;
             newMessage.geohash = geohashFull;
+            //newMessage.created_by = userCircle; // reference or include display name, userId + profile?
 
             //newMessage.location = { latitude, longitude, geohash: geohashFull }; // creates subnode which makes data harder to retrieve as nested nodes need to be loaded
         }
 
         // Save the message under user node with a unique key
+        const messageRef = user.get("messages").put(newMessage);
 
         //const messageRef = state.userRef.get("messages").set(newMessage);
         // TODO we want to save the message under user node not userRef right?
@@ -58,7 +62,7 @@ const Chat: Component<ChatProps> = () => {
 
         // Store the message key under the corresponding index nodes
         // global index
-        //indexRef.get("messages").set(messageRef);
+        indexRef.get("messages").set(messageRef);
 
         // date index
         createdAtKeys.forEach((dateKey: any) => {
@@ -93,23 +97,27 @@ const Chat: Component<ChatProps> = () => {
         <>
             <div class="flex h-full pointer-events-none">
                 <div class="p-3 w-full mt-24">
-                    <ul>
-                        {circles() && (
-                            <For each={Object.values(circles())?.filter((x: any) => x.type === "message")}>
-                                {(item: any) => (
-                                    <li
+                    <Show when={circles()}>
+                        <For each={Object.values(circles())?.filter((x: any) => x.type === "message")}>
+                            {(item: any) => (
+                                <div class="flex flex-row items-end">
+                                    <CirclePicture circle={item.created_by ?? userCircle()} size="26px" className="mr-2 mb-3" />
+                                    <div
                                         class={`${
                                             isDarkTheme() ? "chatmessage-dark" : "chatmessage"
-                                        } rounded-3xl shadow-lg p-2 pl-3 pr-3 min-w-3 mb-2 pointer-events-auto text-sm`}
+                                        } rounded-3xl shadow-lg p-2 pl-3 pr-3 min-w-3 mb-2 pointer-events-auto text-sm pr-14 pb-4 relative`}
                                         // style="background: linear-gradient(90deg, rgb(51 132 187) 0%, rgb(0 61 124) 100%); color: white;"
                                         style={isMobile() ? "max-width: 700px;" : ""}
                                     >
-                                        {item.message} ({new Date(item.createdAt).toLocaleTimeString()})
-                                    </li>
-                                )}
-                            </For>
-                        )}
-                    </ul>
+                                        {item.message}
+                                        <div class="text-xs absolute bottom-2 right-4 text-white" style="color: #c9b672;">
+                                            {new Date(item.createdAt).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
+                                        </div>
+                                    </div>
+                                </div>
+                            )}
+                        </For>
+                    </Show>
                 </div>
             </div>
             <div class="p-3 mt-auto w-full relative pointer-events-auto">

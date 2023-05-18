@@ -105,8 +105,7 @@ const Chat: Component<ChatProps> = () => {
                                     <div
                                         class={`${
                                             isDarkTheme() ? "chatmessage-dark" : "chatmessage"
-                                        } rounded-3xl shadow-lg p-2 pl-3 pr-3 min-w-3 mb-2 pointer-events-auto text-sm pr-14 pb-4 relative`}
-                                        // style="background: linear-gradient(90deg, rgb(51 132 187) 0%, rgb(0 61 124) 100%); color: white;"
+                                        } rounded-3xl shadow-lg p-2 pl-3 pr-12 min-w-3 mb-2 pointer-events-auto text-sm pb-4 relative`}
                                         style={isMobile() ? "max-width: 700px;" : ""}
                                     >
                                         {item.message}
@@ -123,14 +122,16 @@ const Chat: Component<ChatProps> = () => {
             <div class="p-3 mt-auto w-full relative pointer-events-auto">
                 <div class="bg-inputBox dark:bg-inputBoxDark shadow-lg rounded-3xl overflow-hidden">
                     <textarea
-                        class="w-full resize-none bg-inputBox dark:bg-inputBoxDark text-black dark:text-white"
+                        class="w-full resize-none bg-inputBox text-black"
+                        // dark:bg-inputBoxDark dark:text-white
                         style="height: 35px; padding-left: 15px; padding-top: 7px;"
                         value={message()}
                         onInput={(e) => setMessage((e.target as HTMLTextAreaElement).value)}
                         onKeyDown={handleKeyDown}
                     />
                     <button class="absolute top-5 right-8" onClick={sendMessage}>
-                        <IoSend color={isDarkTheme() ? "#cccccc" : "#8d8c80"} size="22px" />
+                        <IoSend color="#8d8c80" size="22px" />
+                        {/* isDarkTheme() ? "#cccccc" : "#8d8c80" */}
                     </button>
                 </div>
             </div>

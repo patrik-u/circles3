@@ -35,7 +35,7 @@ const Track: Component<TrackProps> = (props) => {
         props.track.detach(videoRef);
     });
 
-    return <video class="jitsi-track rounded-3xl" ref={videoRef!} autoplay />;
+    return <video class="jitsi-track rounded-3xl pb-2" ref={videoRef!} autoplay />;
 };
 
 interface VideoProps {}

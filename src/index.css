@@ -83,14 +83,17 @@ code {
 }
 
 .chatmessage-dark {
-    background: linear-gradient(90deg, #9ea6bd 0%, #485067 100%);
+    /* background: linear-gradient(90deg, #9ea6bd 0%, #485067 100%); */
+    background: linear-gradient(90deg, #d3d1d3 0%, #ffffff 100%);
+    /* background: linear-gradient(90deg, #eed0ef 0%, #ffffff 100%); */
     /* background: linear-gradient(90deg, #73788a 0%, #878c99 100%); */
     /* background: linear-gradient(90deg, #717171 0%, #3f3f3f 100%); */
     /* background: linear-gradient(90deg, #878da1 0%, #9ca1af 100%); */
     /* background: linear-gradient(90deg, #7b8297 0%, #272b3a 100%); */
     /* background: linear-gradient(90deg, #717171 0%, #181818 100%); */
     /* background: linear-gradient(90deg, #66aef9 0%, #140a3f 100%); */
-    color: white;
+    /* color: white; */
+    color: black;
 }
 
 .chatmessage {

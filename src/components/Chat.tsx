@@ -120,7 +120,8 @@ const Chat: Component<ChatProps> = () => {
                 </div>
             </div>
             <div class="p-3 mt-auto w-full relative pointer-events-auto">
-                <div class="bg-inputBox dark:bg-inputBoxDark shadow-lg rounded-3xl overflow-hidden">
+                <div class="bg-inputBox shadow-lg rounded-3xl overflow-hidden">
+                    {/* dark:bg-inputBoxDark */}
                     <textarea
                         class="w-full resize-none bg-inputBox text-black"
                         // dark:bg-inputBoxDark dark:text-white
